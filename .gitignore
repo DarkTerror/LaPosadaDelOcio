@@ -98,3 +98,8 @@ cmake_install.cmake
 #
 !dep/ACE_wrappers/ace/ace_message_table.bin
 !dep/tbb/src/Makefile
+
+#
+# Mis SQL de DarkWoW
+#
+LaPosada/*
