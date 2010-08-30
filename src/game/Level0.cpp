@@ -81,6 +81,13 @@ bool ChatHandler::HandleStartCommand(char* /*args*/)
         return false;
     }
 
+    if(chr->InBattleGround())
+    {
+        SendSysMessage(LANG_YOU_IN_BATTLEGROUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
     // cast spell Stuck
     chr->CastSpell(chr,7355,false);
     return true;
