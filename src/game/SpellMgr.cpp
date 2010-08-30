@@ -1800,6 +1800,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Kindred Spirits
                 if( spellInfo_1->SpellIconID == 3559 && spellInfo_2->SpellIconID == 3559 )
                     return false;
+
+                // Taste of Blood and Sudden Death
+                if( (spellInfo_1->Id == 52437 && spellInfo_2->Id == 60503) ||
+                    (spellInfo_2->Id == 52437 && spellInfo_1->Id == 60503) )
+                    return false;
             }
             // Dragonmaw Illusion, Blood Elf Illusion, Human Illusion, Illidari Agent Illusion, Scarlet Crusade Disguise
             if(spellInfo_1->SpellIconID == 1691 && spellInfo_2->SpellIconID == 1691)
