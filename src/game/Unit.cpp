@@ -9941,7 +9941,7 @@ void Unit::SetFeared(bool apply, ObjectGuid casterGuid, uint32 spellID, uint32 t
     {
         RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING);
 
-        GetMotionMaster()->MovementExpired(false);
+        GetMotionMaster()->Clear(false);
 
         if (GetTypeId() != TYPEID_PLAYER && isAlive())
         {
@@ -9977,7 +9977,7 @@ void Unit::SetConfused(bool apply, ObjectGuid casterGuid, uint32 spellID)
     {
         RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED);
 
-        GetMotionMaster()->MovementExpired(false);
+        GetMotionMaster()->Clear(false);
 
         if (GetTypeId() != TYPEID_PLAYER && isAlive())
         {
