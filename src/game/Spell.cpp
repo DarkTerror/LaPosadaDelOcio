@@ -3010,7 +3010,7 @@ void Spell::cast(bool skipCheck)
     InitializeDamageMultipliers();
 
     // Okay, everything is prepared. Now we need to distinguish between immediate and evented delayed spells
-    if (m_spellInfo->speed > 0.0f)
+    if (m_spellInfo->speed > 0.0f || m_spellInfo->Id == 14157)
     {
 
         // Remove used for cast item if need (it can be already NULL after TakeReagents call
