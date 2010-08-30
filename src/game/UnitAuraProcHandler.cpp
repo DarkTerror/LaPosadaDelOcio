@@ -3439,6 +3439,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 trigger_spell_id = 37661;
                 target = pVictim;
             }
+            // Unyielding Knights
+            else if (auraSpellInfo->Id == 38164)
+            {
+                if (!pVictim->GetEntry() == 19457)
+                    return SPELL_AURA_PROC_FAILED;
+            }
             // Bonus Healing (Crystal Spire of Karabor mace)
             else if (auraSpellInfo->Id == 40971)
             {
