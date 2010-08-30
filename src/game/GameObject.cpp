@@ -927,7 +927,7 @@ void GameObject::Use(Unit* user)
     uint32 spellId = 0;
     bool triggered = false;
 
-    if (user->GetTypeId() == TYPEID_PLAYER && Script->GOHello((Player*)user, this))
+    if (!user || user->GetTypeId() == TYPEID_PLAYER && Script->GOHello((Player*)user, this))
         return;
 
     switch(GetGoType())

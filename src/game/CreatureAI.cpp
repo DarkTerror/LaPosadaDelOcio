@@ -33,6 +33,9 @@ void CreatureAI::AttackedBy( Unit* attacker )
 
 CanCastResult CreatureAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, bool isTriggered)
 {
+    if (!pTarget)
+        return CAST_FAIL_OTHER;
+
     // If not triggered, we check
     if (!isTriggered)
     {
