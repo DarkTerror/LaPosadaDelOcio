@@ -2475,6 +2475,7 @@ bool ChatHandler::HandleKickPlayerCommand(char *args)
 
     // send before target pointer invalidate
     PSendSysMessage(LANG_COMMAND_KICKMESSAGE, GetNameLink(target).c_str());
+    sWorld.SendWorldText(LANG_KICK_WORLD_ANNOUNCE, GetNameLink(target).c_str());
     target->GetSession()->KickPlayer();
     return true;
 }

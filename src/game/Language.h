@@ -364,7 +364,9 @@ enum MangosStrings
     LANG_COMMAND_TICKETRESPONSE         = 373,
     LANG_COMMAND_TICKETCOUNT_CONSOLE    = 374,
     LANG_COMMAND_TICKETNOTEXIST_NAME    = 375,
-    // Room for more level 2              376-399 not used
+    // Room for more level 2              376-398 not used
+    // Kick announce
+    LANG_KICK_WORLD_ANNOUNCE 		= 399,
 
     // level 3 chat
     LANG_SCRIPTS_RELOADED               = 400,
