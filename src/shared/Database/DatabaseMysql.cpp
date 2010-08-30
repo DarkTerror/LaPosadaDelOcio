@@ -166,12 +166,28 @@ bool DatabaseMysql::Initialize(const char *infoString)
         PExecute("SET NAMES `utf8`");
         PExecute("SET CHARACTER SET `utf8`");
 
+		#if MYSQL_VERSION_ID >= 50003
+				my_bool my_true = (my_bool)1;
+				if (mysql_options(mMysql, MYSQL_OPT_RECONNECT, &my_true))
+				{
+					sLog.outDetail("No se pudo activar MYSQL_OPT_RECONNECT.");
+				}
+				else
+				{
+					sLog.outDetail("Activado con exito MYSQL_OPT_RECONNECT.");
+				}
+		#else
+				sLog.outDetail("Tu version de la libreria cliente de MySQL no soporta la reconexion tras el tiempo de espera.");
+				sLog.outDetail("Si esta es la causa te advertimos de que tu debes actualizarlo.");
+				sLog.outDetail("Tu libreria cliente deMySQL debe estar por lo menos en la version 5.0.13 para resolver el problema.");
+		#endif
+
         return true;
     }
     else
     {
         sLog.outError( "Could not connect to MySQL database at %s: %s\n",
-            host.c_str(),mysql_error(mysqlInit));
+        host.c_str(),mysql_error(mysqlInit));
         mysql_close(mysqlInit);
         return false;
     }
