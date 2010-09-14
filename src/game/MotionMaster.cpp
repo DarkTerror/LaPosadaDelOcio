@@ -68,6 +68,8 @@ void MotionMaster::UpdateMotion(uint32 diff)
     if (m_owner->hasUnitState(UNIT_STAT_CAN_NOT_MOVE))
         return;
 
+  if (!empty())
+  {
     MANGOS_ASSERT( !empty() );
     m_cleanFlag |= MMCF_UPDATE;
 
@@ -100,6 +102,7 @@ void MotionMaster::UpdateMotion(uint32 diff)
             m_cleanFlag &= ~MMCF_RESET;
         }
     }
+  }
 }
 
 void MotionMaster::DirectClean(bool reset, bool all)
