@@ -8154,6 +8154,33 @@ void Aura::HandleAuraModAllCritChance(bool apply, bool Real)
     ((Player*)target)->UpdateAllSpellCritChances();
 }
 
+void Aura::HandleAllowOnlyAbility(bool apply, bool Real)
+{
+    if(!Real)
+        return;
+
+    Unit *target = GetTarget();
+
+    if(apply)
+    {
+        target->setAttackTimer(BASE_ATTACK,m_duration);
+        target->setAttackTimer(RANGED_ATTACK,m_duration);
+        target->setAttackTimer(OFF_ATTACK,m_duration);
+        target->SetFlag(PLAYER_FLAGS,PLAYER_FLAGS_UNK24);
+    }
+    else
+    {
+        target->resetAttackTimer(BASE_ATTACK);
+        target->resetAttackTimer(RANGED_ATTACK);
+        target->resetAttackTimer(OFF_ATTACK);
+        target->RemoveFlag(PLAYER_FLAGS,PLAYER_FLAGS_UNK24);
+    }
+
+    target->UpdateDamagePhysical(BASE_ATTACK);
+    target->UpdateDamagePhysical(RANGED_ATTACK);
+    target->UpdateDamagePhysical(OFF_ATTACK);
+}
+
 void Aura::SetAuraMaxDuration( int32 duration )
 {
 	m_maxduration = duration;
