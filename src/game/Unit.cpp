@@ -6605,6 +6605,10 @@ int32 Unit::SpellBaseDamageBonusTaken(SpellSchoolMask schoolMask)
 
 bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolMask schoolMask, WeaponAttackType attackType)
 {
+    // los mobs no pueden hacer criticos con sus spells, pero si las pets/mascotas.
+    if (GetObjectGuid().IsCreature() && !GetObjectGuid().IsPet())
+        return false;
+
     // not critting spell
     if((spellProto->AttributesEx2 & SPELL_ATTR_EX2_CANT_CRIT))
         return false;
