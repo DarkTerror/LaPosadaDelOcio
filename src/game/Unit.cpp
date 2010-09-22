@@ -2819,6 +2819,9 @@ float Unit::CalculateLevelPenalty(SpellEntry const* spellProto) const
     if(spellLevel <= 0)
         return 1.0f;
 
+    if (sSpellMgr.IsHighestRankOfSpell(spellProto->Id))
+        return 1.0f;
+
     float LvlPenalty = 0.0f;
 
     if(spellLevel < 20)
