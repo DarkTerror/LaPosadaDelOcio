@@ -3295,6 +3295,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
+            // Rune Strike
+            else if (auraSpellInfo->Id == 56816)
+            {
+                if( Aura * pAura = this->GetAura(56816, EFFECT_INDEX_0))
+                    pAura->GetHolder()->SendFakeAuraUpdate(56817, false);
+                    return SPELL_AURA_PROC_OK;
+            }
             // Blade Barrier
             else if (auraSpellInfo->SpellIconID == 85)
             {
