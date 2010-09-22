@@ -2959,6 +2959,9 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         if (target->GetTypeId() != TYPEID_PLAYER)
             modelid = ssEntry->modelID_A;
         else
+            modelid = target->GetModelForForm(form);
+        /*
+        else
         {
             // players are a bit different since the dbc has seldomly an horde modelid
             if (Player::TeamForRace(target->getRace()) == HORDE)
@@ -2972,7 +2975,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             // nothing found in above, so use default
             if (!modelid)
                 modelid = ssEntry->modelID_A;
-        }
+        }*/
     }
 
     // now only powertype must be set
