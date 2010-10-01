@@ -7950,6 +7950,20 @@ bool Unit::isVisibleForOrDetect(Unit const* u, WorldObject const* viewPoint, boo
     if(HasAura(SPELL_ARENA_PREPARATION))
         invisible = true;
 
+    // Buff in DK starting location provides invisibility for each faction players
+    if(GetMapId() == 609)
+    {
+        if(GetTypeId() == TYPEID_PLAYER && u->GetTypeId() == TYPEID_PLAYER)
+        {
+            if(((Player*)this)->GetTeam() == ((Player*)u)->GetTeam())
+                invisible = false;
+            else
+                invisible = true;
+        }
+        else
+            invisible = false;
+    }
+
     // special cases for always overwrite invisibility/stealth
     if(invisible || m_Visibility == VISIBILITY_GROUP_STEALTH)
     {
