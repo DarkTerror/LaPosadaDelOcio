@@ -1828,6 +1828,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Nether Protection effects
                 if( spellInfo_2->SpellIconID == 1985 && spellInfo_1->SpellIconID == 1985 && spellInfo_1->SpellVisual[0] == 9750 )
                     return false;
+
+				// Fury of Frostmourne
+				if( spellInfo_1->SpellIconID == 2702 && spellInfo_2->SpellIconID == 2702 ||
+					spellInfo_2->SpellIconID == 2702 && spellInfo_1->SpellIconID == 2702 )
+					return false;
             }
             // Dragonmaw Illusion, Blood Elf Illusion, Human Illusion, Illidari Agent Illusion, Scarlet Crusade Disguise
             if(spellInfo_1->SpellIconID == 1691 && spellInfo_2->SpellIconID == 1691)
@@ -3554,6 +3559,9 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
             groupEntry = sAreaGroupStore.LookupEntry(groupEntry->nextGroup);
         }
 
+        if (spellInfo->AreaGroupId == 723 && zone_id == 4812)
+            found = true;
+
         if (!found)
             return SPELL_FAILED_INCORRECT_AREA;
     }
@@ -3660,6 +3668,8 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
             BattleGround* bg = player->GetBattleGround();
             return bg && bg->GetStatus()==STATUS_WAIT_JOIN ? SPELL_CAST_OK : SPELL_FAILED_ONLY_IN_ARENA;
         }
+        case 72293:                                         // Mark of the Fallen Champion
+            return map_id == 631 ? SPELL_CAST_OK : SPELL_FAILED_INCORRECT_AREA;
     }
 
     return SPELL_CAST_OK;
