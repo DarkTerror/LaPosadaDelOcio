@@ -1784,7 +1784,7 @@ InstanceGroupBind* Group::BindToInstance(InstanceSave *save, bool permanent, boo
                         save->GetInstanceId(), permanent, GetLeaderGuid().GetCounter(), bind.save->GetInstanceId());
         }
         else if (!load)
-            CharacterDatabase.PExecute("INSERT INTO group_instance (leaderGuid, instance, permanent) VALUES ('%u', '%u', '%u')",
+            CharacterDatabase.PExecute("REPLACE INTO group_instance (leaderGuid, instance, permanent) VALUES ('%u', '%u', '%u')",
                 GetLeaderGuid().GetCounter(), save->GetInstanceId(), permanent);
 
         if(bind.save != save)

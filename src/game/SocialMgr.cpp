@@ -74,7 +74,7 @@ bool PlayerSocial::AddToSocialList(uint32 friend_lowguid, bool ignore)
     }
     else
     {
-        CharacterDatabase.PExecute("INSERT INTO character_social (guid, friend, flags) VALUES ('%u', '%u', '%u')", m_playerLowGuid, friend_lowguid, flag);
+        CharacterDatabase.PExecute("REPLACE INTO character_social (guid, friend, flags) VALUES ('%u', '%u', '%u')", m_playerLowGuid, friend_lowguid, flag);
         FriendInfo fi;
         fi.Flags |= flag;
         m_playerSocialMap[friend_lowguid] = fi;
