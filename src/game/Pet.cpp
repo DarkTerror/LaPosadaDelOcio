@@ -1994,6 +1994,10 @@ void Pet::CastPetAuras(bool current)
         else
             CastPetAura(pa);
     }
+
+    // Feral Spirit
+    if (GetEntry() == 29264)
+        CastSpell(this, 58877, true);
 }
 
 void Pet::CastPetAura(PetAura const* aura)
