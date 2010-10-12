@@ -3507,6 +3507,13 @@ void Aura::HandleForceReaction(bool apply, bool Real)
     // stop fighting if at apply forced rank friendly or at remove real rank friendly
     if ((apply && faction_rank >= REP_FRIENDLY) || (!apply && player->GetReputationRank(faction_id) >= REP_FRIENDLY))
         player->StopAttackFaction(faction_id);
+
+  // Nitro Boosts - drop BG flag if is carrying
+    if (SpellEntry const *spellInfo = GetSpellProto())
+        if (spellInfo->Id == 54861)
+            if((player->HasAura(23335) || player->HasAura(23333) || player->HasAura(34976)) && player->InBattleGround())
+                if(BattleGround *bg = player->GetBattleGround())
+                    bg->EventPlayerDroppedFlag(player);
 }
 
 void Aura::HandleAuraModSkill(bool apply, bool /*Real*/)
