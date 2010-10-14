@@ -2953,6 +2953,12 @@ void Spell::cast(bool skipCheck)
 			// Shattering Throw
             if (m_spellInfo->Id == 64382)
                 AddTriggeredSpell(64380);                     // Shattering Throw
+
+			// Item - Warrior T10 Melee 4P Bonus
+            else if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
+				if (Aura *aur = m_caster->GetAura(70847, EFFECT_INDEX_0))
+                    if (roll_chance_i(aur->GetModifier()->m_amount))
+                        AddTriggeredSpell(70849);
             break;
         }
         case SPELLFAMILY_PRIEST:
@@ -2985,6 +2991,9 @@ void Spell::cast(bool skipCheck)
             // Faerie Fire (Feral)
             if (m_spellInfo->Id == 16857 && m_caster->m_form != FORM_CAT)
                 AddTriggeredSpell(60089);
+            // Item - Druid T10 Balance 2P Bonus
+            else if (m_spellInfo->Id == 16870 && m_caster->HasAura(70718))
+                AddTriggeredSpell(70721);
             // Berserk (Bear Mangle part)
             else if (m_spellInfo->Id == 50334)
                 AddTriggeredSpell(58923);
