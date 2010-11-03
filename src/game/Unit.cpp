@@ -5849,8 +5849,9 @@ Pet* Unit::GetPet() const
     ObjectGuid pet_guid = GetPetGuid();
     if (!pet_guid.IsEmpty())
     {
-        if(Pet* pet = GetMap()->GetPet(pet_guid))
-            return pet;
+        if(IsInWorld())
+            if(Pet* pet = GetMap()->GetPet(pet_guid))
+                return pet;
 
         sLog.outError("Unit::GetPet: %s not exist.", pet_guid.GetString().c_str());
         const_cast<Unit*>(this)->SetPet(0);
