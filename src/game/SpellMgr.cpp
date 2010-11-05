@@ -717,6 +717,7 @@ bool IsPositiveEffect(uint32 spellId, SpellEffectIndex effIndex)
                         return true;                        // some expected positive spells have SPELL_ATTR_EX_NEGATIVE or unclear target modes
                     break;
                 case SPELL_AURA_ADD_TARGET_TRIGGER:
+				case SPELL_AURA_INITIALIZE_IMAGES:
                     return true;
                 case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
                     if (spellId != spellproto->EffectTriggerSpell[effIndex])
@@ -1843,6 +1844,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Fireball & Pyroblast (Dots)
                 if (((spellInfo_1->SpellFamilyFlags & UI64LIT(0x1)) && (spellInfo_2->SpellFamilyFlags & UI64LIT(0x400000))) ||
                     ((spellInfo_2->SpellFamilyFlags & UI64LIT(0x1)) && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x400000))))
+                    return false;
+
+                //Mirror image frostbolt and mage frostbolt
+                if( spellInfo_2->SpellIconID == 188 && spellInfo_1->Id == 59638 )
                     return false;
             }
             break;
