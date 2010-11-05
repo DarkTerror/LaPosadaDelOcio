@@ -23,6 +23,7 @@
 #include "Log.h"
 #include "Transports.h"
 #include "GridDefines.h"
+#include "InstanceData.h"
 #include "DestinationHolderImp.h"
 #include "World.h"
 #include "CellImpl.h"
@@ -228,6 +229,18 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
             player->SendTransferAborted(GetId(), TRANSFER_ABORT_ZONE_IN_COMBAT);
             return(false);
         }*/
+
+        if (!player->isGameMaster())
+        {
+            InstanceData* i_data = ((InstanceMap*)CreateMap(mapid, player))->GetInstanceData();
+
+            if (i_data && i_data->IsEncounterInProgress() && !player->isGameMaster())
+            {
+                player->SendTransferAborted(mapid, TRANSFER_ABORT_ZONE_IN_COMBAT);
+                return false;
+            }
+        }
+
         return true;
     }
     else
