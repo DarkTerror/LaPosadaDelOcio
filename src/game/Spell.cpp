@@ -751,7 +751,7 @@ void Spell::prepareDataForTriggerSystem()
                 break;
             case SPELLFAMILY_PRIEST:
                 // For Penance,Mind Sear,Mind Flay heal/damage triggers need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0001800000800000) || (m_spellInfo->SpellFamilyFlags2 & 0x00000040))
+                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0019800000800000) || (m_spellInfo->SpellFamilyFlags2 & 0x00000440))
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_ROGUE:
@@ -1176,6 +1176,14 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
         return;
 
     Unit* realCaster = GetAffectiveCaster();
+
+    // Cyclone cast on immune targets -- TODO: check to see why below wont work
+    if (m_spellInfo->Id == 33786 && unit->IsImmunedToDamage(GetSpellSchoolMask(m_spellInfo)))
+    {
+        if (realCaster)
+            realCaster->SendSpellMiss(unit, m_spellInfo->Id, SPELL_MISS_IMMUNE);
+        return;
+    }
 
     // Recheck immune (only for delayed spells)
     if (m_spellInfo->speed && (
