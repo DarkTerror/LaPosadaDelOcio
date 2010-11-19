@@ -2238,6 +2238,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool CanSpeak() const;
         void ChangeSpeakTime(int utime);
 
+        // last used pet number (for BG's)
+        uint32 GetLastPetNumber() const { return m_lastpetnumber; }
+        void SetLastPetNumber(uint32 petnumber) { m_lastpetnumber = petnumber; }
+
         /*********************************************************/
         /***                 VARIOUS SYSTEMS                   ***/
         /*********************************************************/
@@ -2651,6 +2655,11 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_groupUpdateMask;
         uint64 m_auraUpdateMask;
 
+        ObjectGuid m_miniPetGuid;
+
+        // last used pet number (for BG's)
+        uint32 m_lastpetnumber;
+
         // Player summoning
         time_t m_summon_expire;
         uint32 m_summon_mapid;
@@ -2728,6 +2737,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;
+        uint32 m_oldpetspell;
 
         AchievementMgr m_achievementMgr;
         ReputationMgr  m_reputationMgr;
