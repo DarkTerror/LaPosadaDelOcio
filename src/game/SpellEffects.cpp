@@ -413,6 +413,16 @@ void Spell::EffectSchoolDMG(SpellEffectIndex effect_idx)
                         damage *= exp(-distance/(10.0f));
                         break;
                     }
+                    // Blade of Twilight
+                    case 74769:
+                    case 77844:
+                    case 77845:
+                    case 77846:
+                    {
+                        float distance = unitTarget->GetDistance2d(m_caster);
+                        damage *= exp(-distance/(10.0f));
+                        break;
+                    }
                 }
                 break;
             }
