@@ -520,6 +520,11 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_ammoDPS = 0.0f;
 
     m_temporaryUnsummonedPetNumber = 0;
+    //cache for UNIT_CREATED_BY_SPELL to allow
+    //returning reagents for temporarily removed pets
+    //when dying/logging out
+    m_oldpetspell = 0;
+    m_lastpetnumber = 0;
 
     ////////////////////Rest System/////////////////////
     time_inn_enter=0;
