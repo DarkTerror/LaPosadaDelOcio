@@ -46,6 +46,14 @@ Channel::Channel(const std::string& name, uint32 channel_id)
     }
     else                                                    // it's custom channel
     {
+        // Disable announcements as default of our world channels
+        std::string converted;
+        converted.resize(name.size());
+        std::transform(name.begin(), name.end(), converted.begin(), ::tolower);
+
+        if(converted.find("public") || converted.find("qstatus") || converted.find("trader"))
+            m_announce = false;
+
         m_flags |= CHANNEL_FLAG_CUSTOM;
     }
 }
