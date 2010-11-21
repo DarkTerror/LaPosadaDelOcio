@@ -550,7 +550,7 @@ uint32 ArenaTeam::GetPoints(uint32 MemberRating)
     if (sWorld.getConfig(CONFIG_UINT32_ARENA_SEASON_ID) >= 6 && rating <= 1500)
         rating = 1500;
 
-    if(rating <= 1500)
+    if(rating >= 300 && rating <= 1500)
         points = (float)rating * 0.22f + 14.0f;
     else
         points = 1511.26f / (1.0f + 1639.28f * exp(-0.00412f * (float)rating));
@@ -733,7 +733,7 @@ void ArenaTeam::UpdateArenaPointsHelper(std::map<uint32, uint32>& PlayerPoints)
     // called after a match has ended and the stats are already modified
     // helper function for arena point distribution (this way, when distributing, no actual calculation is required, just a few comparisons)
     // 10 played games per week is a minimum
-    if (m_stats.games_week < 10)
+    if (m_stats.games_week < 40)
         return;
     // to get points, a player has to participate in at least 30% of the matches
     uint32 min_plays = (uint32) ceil(m_stats.games_week * 0.3);
