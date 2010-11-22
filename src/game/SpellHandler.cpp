@@ -438,6 +438,10 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
     if (IsPassiveSpell(spellInfo))
         return;
 
+    // Honorless Target
+    if (spellInfo->Id == SPELL_ID_HONORLESS_TARGET)
+        return;
+
     if (!IsPositiveSpell(spellId))
     {
         // ignore for remote control state

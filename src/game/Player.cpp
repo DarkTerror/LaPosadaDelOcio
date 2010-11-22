@@ -4525,7 +4525,11 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     UpdateObjectVisibility();
 
     if(!applySickness)
+    {
+        if (!GetMap()->Instanceable())
+            CastSpell(this, SPELL_ID_HONORLESS_TARGET, true);
         return;
+    }
 
     //Characters from level 1-10 are not affected by resurrection sickness.
     //Characters from level 11-19 will suffer from one minute of sickness
