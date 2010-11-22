@@ -21858,6 +21858,12 @@ void Player::UnsummonPetTemporaryIfAny()
     if(!pet)
         return;
 
+    if (((Player*)this)->InArena())
+    {
+        RemovePet(PET_SAVE_REAGENTS); // remove pet while is player teleported to arena
+        return;
+    }
+
     if(!m_temporaryUnsummonedPetNumber && pet->isControlled() && !pet->isTemporarySummoned() )
         m_temporaryUnsummonedPetNumber = pet->GetCharmInfo()->GetPetNumber();
 
