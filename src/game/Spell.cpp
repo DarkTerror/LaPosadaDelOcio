@@ -4280,7 +4280,12 @@ SpellCastResult Spell::CheckCast(bool strict)
             if(bg->GetStatus() == STATUS_WAIT_LEAVE)
                 return SPELL_FAILED_DONT_REPORT;
 
-    if (!m_IsTriggeredSpell && IsNonCombatSpell(m_spellInfo) &&
+    bool bNonCombatSpell = IsNonCombatSpell(m_spellInfo);
+    // Warbringer
+    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARRIOR && m_spellInfo->Category == 1219 && m_spellInfo->SpellIconID == 457 && (m_caster->HasAura(57499) || m_caster->HasAura(64976)))
+        bNonCombatSpell = false;
+
+    if (!m_IsTriggeredSpell && IsNonCombatSpell(m_spellInfo) && bNonCombatSpell &&
         m_caster->isInCombat() && !m_caster->IsIgnoreUnitState(m_spellInfo, IGNORE_UNIT_COMBAT_STATE))
         return SPELL_FAILED_AFFECTING_COMBAT;
 
@@ -4996,7 +5001,16 @@ SpellCastResult Spell::CheckCast(bool strict)
             case SPELL_EFFECT_CHARGE:
             {
                 if (m_caster->hasUnitState(UNIT_STAT_ROOT))
+                {
+                    // Intervene with Warbringer talent
+                    if (m_spellInfo->Id == 3411 && m_caster->HasAura(57499, EFFECT_INDEX_2))
+                    {
+                        m_caster->RemoveAurasAtMechanicImmunity(IMMUNE_TO_ROOT_AND_SNARE_MASK, 0);
+                        return SPELL_FAILED_DONT_REPORT;
+                    }
+
                     return SPELL_FAILED_ROOTED;
+                }
 
                 break;
             }
