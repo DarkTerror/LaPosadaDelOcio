@@ -1816,6 +1816,7 @@ struct VehicleSeatEntry
     int32   m_uiSkin;                                       // 44
     uint32  m_flagsB;                                       // 45
                                                             // 46-57 added in 3.1, floats mostly
+    bool IsUsable() const { return m_flags & SEAT_FLAG_USABLE; }
 };
 
 struct WMOAreaTableEntry

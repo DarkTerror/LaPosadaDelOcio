@@ -694,24 +694,30 @@ bool ChatHandler::HandleModifyHPCommand(char* args)
         return false;
     }
 
-    Player *chr = getSelectedPlayer();
-    if (chr == NULL)
+    Unit *target = getSelectedUnit();
+    if (!target)
     {
-        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
         SetSentErrorMessage(true);
         return false;
     }
 
-    // check online security
-    if (HasLowerSecurity(chr, 0))
-        return false;
+    if (target->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* plr = (Player*)target;
 
-    PSendSysMessage(LANG_YOU_CHANGE_HP, GetNameLink(chr).c_str(), hp, hpm);
-    if (needReportToTarget(chr))
-        ChatHandler(chr).PSendSysMessage(LANG_YOURS_HP_CHANGED, GetNameLink().c_str(), hp, hpm);
+        // check online security
+        if (HasLowerSecurity(plr, 0))
+            return false;
 
-    chr->SetMaxHealth( hpm );
-    chr->SetHealth( hp );
+        PSendSysMessage(LANG_YOU_CHANGE_HP, GetNameLink(plr).c_str(), hp, hpm);
+
+        if (needReportToTarget(plr))
+            ChatHandler(plr).PSendSysMessage(LANG_YOURS_HP_CHANGED, GetNameLink().c_str(), hp, hpm);
+    }
+
+    target->SetMaxHealth(hpm);
+    target->SetHealth(hp);
 
     return true;
 }
@@ -732,24 +738,30 @@ bool ChatHandler::HandleModifyManaCommand(char* args)
         return false;
     }
 
-    Player *chr = getSelectedPlayer();
-    if (chr == NULL)
+    Unit *target = getSelectedUnit();
+    if (!target)
     {
-        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
         SetSentErrorMessage(true);
         return false;
     }
 
-    // check online security
-    if (HasLowerSecurity(chr, 0))
-        return false;
+    if (target->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* plr = (Player*)target;
 
-    PSendSysMessage(LANG_YOU_CHANGE_MANA, GetNameLink(chr).c_str(), mana, manam);
-    if (needReportToTarget(chr))
-        ChatHandler(chr).PSendSysMessage(LANG_YOURS_MANA_CHANGED, GetNameLink().c_str(), mana, manam);
+        // check online security
+        if (HasLowerSecurity(plr, 0))
+            return false;
 
-    chr->SetMaxPower(POWER_MANA,manam );
-    chr->SetPower(POWER_MANA, mana );
+        PSendSysMessage(LANG_YOU_CHANGE_MANA, GetNameLink(plr).c_str(), mana, manam);
+
+        if (needReportToTarget(plr))
+            ChatHandler(plr).PSendSysMessage(LANG_YOURS_MANA_CHANGED, GetNameLink().c_str(), mana, manam);
+    }
+
+    target->SetMaxPower(POWER_MANA,manam);
+    target->SetPower(POWER_MANA, mana);
 
     return true;
 }
@@ -760,8 +772,8 @@ bool ChatHandler::HandleModifyEnergyCommand(char* args)
     if(!*args)
         return false;
 
-    int32 energy = atoi(args)*10;
-    int32 energym = atoi(args)*10;
+    int32 energy = atoi(args);
+    int32 energym = atoi(args);
 
     if (energy <= 0 || energym <= 0 || energym < energy)
     {
@@ -770,26 +782,32 @@ bool ChatHandler::HandleModifyEnergyCommand(char* args)
         return false;
     }
 
-    Player *chr = getSelectedPlayer();
-    if (!chr)
+    Unit *target = getSelectedUnit();
+    if (!target)
     {
-        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
         SetSentErrorMessage(true);
         return false;
     }
 
-    // check online security
-    if (HasLowerSecurity(chr, 0))
-        return false;
+    if (target->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* plr = (Player*)target;
 
-    PSendSysMessage(LANG_YOU_CHANGE_ENERGY, GetNameLink(chr).c_str(), energy/10, energym/10);
-    if (needReportToTarget(chr))
-        ChatHandler(chr).PSendSysMessage(LANG_YOURS_ENERGY_CHANGED, GetNameLink().c_str(), energy/10, energym/10);
+        // check online security
+        if (HasLowerSecurity(plr, 0))
+            return false;
 
-    chr->SetMaxPower(POWER_ENERGY,energym );
-    chr->SetPower(POWER_ENERGY, energy );
+        PSendSysMessage(LANG_YOU_CHANGE_ENERGY, GetNameLink(plr).c_str(), energy, energym);
 
-    DETAIL_LOG(GetMangosString(LANG_CURRENT_ENERGY),chr->GetMaxPower(POWER_ENERGY));
+        if (needReportToTarget(plr))
+            ChatHandler(plr).PSendSysMessage(LANG_YOURS_ENERGY_CHANGED, GetNameLink().c_str(), energy, energym);
+    }
+
+    target->SetMaxPower(POWER_ENERGY, energym);
+    target->SetPower(POWER_ENERGY, energy);
+
+    DETAIL_LOG(GetMangosString(LANG_CURRENT_ENERGY), target->GetMaxPower(POWER_ENERGY));
 
     return true;
 }
@@ -800,8 +818,8 @@ bool ChatHandler::HandleModifyRageCommand(char* args)
     if(!*args)
         return false;
 
-    int32 rage = atoi(args)*10;
-    int32 ragem = atoi(args)*10;
+    int32 rage = atoi(args);
+    int32 ragem = atoi(args);
 
     if (rage <= 0 || ragem <= 0 || ragem < rage)
     {
@@ -810,24 +828,30 @@ bool ChatHandler::HandleModifyRageCommand(char* args)
         return false;
     }
 
-    Player *chr = getSelectedPlayer();
-    if (chr == NULL)
+    Unit *target = getSelectedUnit();
+    if (!target)
     {
-        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
         SetSentErrorMessage(true);
         return false;
     }
 
-    // check online security
-    if (HasLowerSecurity(chr, 0))
-        return false;
+    if (target->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* plr = (Player*)target;
 
-    PSendSysMessage(LANG_YOU_CHANGE_RAGE, GetNameLink(chr).c_str(), rage/10, ragem/10);
-    if (needReportToTarget(chr))
-        ChatHandler(chr).PSendSysMessage(LANG_YOURS_RAGE_CHANGED, GetNameLink().c_str(), rage/10, ragem/10);
+        // check online security
+        if (HasLowerSecurity(plr, 0))
+            return false;
 
-    chr->SetMaxPower(POWER_RAGE,ragem );
-    chr->SetPower(POWER_RAGE, rage );
+        PSendSysMessage(LANG_YOU_CHANGE_RAGE, GetNameLink(plr).c_str(), rage, ragem);
+
+        if (needReportToTarget(plr))
+            ChatHandler(plr).PSendSysMessage(LANG_YOURS_RAGE_CHANGED, GetNameLink().c_str(), rage, ragem);
+    }
+
+    target->SetMaxPower(POWER_RAGE, ragem*10);
+    target->SetPower(POWER_RAGE, rage*10);
 
     return true;
 }
@@ -838,8 +862,8 @@ bool ChatHandler::HandleModifyRunicPowerCommand(char* args)
     if(!*args)
         return false;
 
-    int32 rune = atoi(args)*10;
-    int32 runem = atoi(args)*10;
+    int32 rune = atoi(args);
+    int32 runem = atoi(args);
 
     if (rune <= 0 || runem <= 0 || runem < rune)
     {
@@ -848,20 +872,30 @@ bool ChatHandler::HandleModifyRunicPowerCommand(char* args)
         return false;
     }
 
-    Player *chr = getSelectedPlayer();
-    if (chr == NULL)
+    Unit *target = getSelectedUnit();
+    if (!target)
     {
-        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
         SetSentErrorMessage(true);
         return false;
     }
 
-    PSendSysMessage(LANG_YOU_CHANGE_RUNIC_POWER, GetNameLink(chr).c_str(), rune/10, runem/10);
-    if (needReportToTarget(chr))
-        ChatHandler(chr).PSendSysMessage(LANG_YOURS_RUNIC_POWER_CHANGED, GetNameLink().c_str(), rune/10, runem/10);
+    if (target->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* plr = (Player*)target;
 
-    chr->SetMaxPower(POWER_RUNIC_POWER,runem );
-    chr->SetPower(POWER_RUNIC_POWER, rune );
+        // check online security
+        if (HasLowerSecurity(plr, 0))
+            return false;
+
+        PSendSysMessage(LANG_YOU_CHANGE_RUNIC_POWER, GetNameLink(plr).c_str(), rune, runem);
+
+        if (needReportToTarget(plr))
+            ChatHandler(plr).PSendSysMessage(LANG_YOURS_RUNIC_POWER_CHANGED, GetNameLink().c_str(), rune, runem);
+    }
+
+    target->SetMaxPower(POWER_RUNIC_POWER, runem*10);
+    target->SetPower(POWER_RUNIC_POWER, rune*10);
 
     return true;
 }

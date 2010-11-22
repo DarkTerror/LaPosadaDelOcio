@@ -4209,6 +4209,7 @@ void Spell::EffectSummonType(SpellEffectIndex eff_idx)
             // FIXME : multiple summons -  not yet supported as pet
             //1562 - force of nature  - sid 33831
             //1161 - feral spirit - sid 51533
+            //89 - Infernal - sid 1122
             if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
                 DoSummonGuardian(eff_idx, summon_prop->FactionId);
             else
@@ -4267,6 +4268,10 @@ void Spell::DoSummon(SpellEffectIndex eff_idx)
         // set timer for unsummon
         if (duration > 0)
             spawnCreature->SetDuration(duration);
+
+        if (m_spellInfo->Id == 1122) return;   // Warlock Infernal spell has in DBC flags
+                                               // SUMMON_PROP_GROUP_PETS && SUMMON_PROP_TYPE_ARMY
+                                               // and value = 50+lvl 8-(---)
 
         return;
     }
