@@ -142,7 +142,7 @@ void WorldSession::QueuePacket(WorldPacket* new_packet)
 /// Logging helper for unexpected opcodes
 void WorldSession::LogUnexpectedOpcode(WorldPacket* packet, const char *reason)
 {
-    sLog.outError( "SESSION: received unexpected opcode %s (0x%.4X) %s",
+    sLog.outDebug( "SESSION: received unexpected opcode %s (0x%.4X) %s",
         LookupOpcodeName(packet->GetOpcode()),
         packet->GetOpcode(),
         reason);
@@ -221,7 +221,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                     ExecuteOpcode(opHandle, packet);
                     break;
                 case STATUS_NEVER:
-                    sLog.outError( "SESSION: received not allowed opcode %s (0x%.4X)",
+                    sLog.outDebug( "SESSION: received not allowed opcode %s (0x%.4X)",
                         LookupOpcodeName(packet->GetOpcode()),
                         packet->GetOpcode());
                     break;
@@ -231,7 +231,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                         packet->GetOpcode());
                     break;
                 default:
-                    sLog.outError("SESSION: received wrong-status-req opcode %s (0x%.4X)",
+                    sLog.outDebug("SESSION: received wrong-status-req opcode %s (0x%.4X)",
                         LookupOpcodeName(packet->GetOpcode()),
                         packet->GetOpcode());
                     break;
