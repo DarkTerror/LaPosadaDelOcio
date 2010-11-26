@@ -362,7 +362,6 @@ ChatCommand * ChatHandler::getCommandTable()
         { "rage",           SEC_GAMEMASTER,     false, &ChatHandler::HandleModifyRageCommand,          "", NULL },
         { "runicpower",     SEC_GAMEMASTER,     false, &ChatHandler::HandleModifyRunicPowerCommand,    "", NULL },
         { "energy",         SEC_GAMEMASTER,     false, &ChatHandler::HandleModifyEnergyCommand,        "", NULL },
-        { "powertype",      SEC_ADMINISTRATOR,  false, &ChatHandler::HandleModifyPowerTypeCommand,     "", NULL },
         { "money",          SEC_GAMEMASTER,     false, &ChatHandler::HandleModifyMoneyCommand,         "", NULL },
         { "speed",          SEC_GAMEMASTER,     false, &ChatHandler::HandleModifySpeedCommand,         "", NULL },
         { "swim",           SEC_GAMEMASTER,     false, &ChatHandler::HandleModifySwimCommand,          "", NULL },

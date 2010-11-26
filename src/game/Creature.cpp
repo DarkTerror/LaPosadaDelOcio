@@ -128,7 +128,7 @@ m_creatureInfo(NULL), m_splineFlags(SPLINEFLAG_WALKMODE)
     m_regenTimer = 200;
     m_valuesCount = UNIT_END;
 
-    for(int i = 0; i < CREATURE_MAX_SPELLS; ++i)
+    for(int i = 0; i < 4; ++i)
         m_spells[i] = 0;
 
     m_CreatureSpellCooldowns.clear();
@@ -264,7 +264,6 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     SetDisplayId(display_id);
 
     SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
-    SetByteValue(UNIT_FIELD_BYTES_0, 3, cinfo->powerType);
 
     // Load creature equipment
     if (!data || data->equipmentId == 0)
@@ -1029,32 +1028,19 @@ void Creature::SelectLevel(const CreatureInfo *cinfo, float percentHealth, float
     else
         SetHealthPercent(percentHealth);
 
-    Powers powerType = Powers(cinfo->powerType);
-    uint32 maxPower = 0;
+    // mana
+    uint32 minmana = std::min(cinfo->maxmana, cinfo->minmana);
+    uint32 maxmana = std::max(cinfo->maxmana, cinfo->minmana);
+    uint32 mana = minmana + uint32(rellevel * (maxmana - minmana));
 
-    switch(powerType)
-    {
-        case POWER_MANA:
-        {
-            uint32 minmana = std::min(cinfo->maxmana, cinfo->minmana);
-            uint32 maxmana = std::max(cinfo->maxmana, cinfo->minmana);
-            maxPower = minmana + uint32(rellevel * (maxmana - minmana));
+    SetCreateMana(mana);
+    SetMaxPower(POWER_MANA, mana);                          //MAX Mana
+    SetPower(POWER_MANA, mana);
 
-            SetCreateMana(maxPower);
-            break;
-        }
-        case POWER_ENERGY:
-        {
-            maxPower = uint32(GetCreatePowers(powerType) * cinfo->power_mod);
-            break;
-        }
-    }
-
-    SetMaxPower(powerType, maxPower);
-    SetPower(powerType, maxPower);
-    SetModifierValue(UnitMods(UNIT_MOD_MANA + powerType), BASE_VALUE, float(maxPower));
+    // TODO: set UNIT_FIELD_POWER*, for some creature class case (energy, etc)
 
     SetModifierValue(UNIT_MOD_HEALTH, BASE_VALUE, float(health));
+    SetModifierValue(UNIT_MOD_MANA, BASE_VALUE, float(mana));
 
     // damage
     float damagemod = _GetDamageMod(rank);
