@@ -499,6 +499,26 @@ bool Master::_StartDB()
         return false;
     }
 
+   ///- Get login database info from configuration file
+    dbstring = sConfig.GetStringDefault("LogDatabaseInfo", "");
+    if(dbstring.empty())
+    {
+        sLog.outError("Log database not specified in configuration file");
+
+        ///- Wait for already started DB delay threads to end
+        return false;
+    }
+
+    ///- Initialise the login database
+    sLog.outString("Log Database: %s", dbstring.c_str() );
+    if(!LogDatabase.Initialize(dbstring.c_str()))
+    {
+        sLog.outError("Cannot connect to Log database %s",dbstring.c_str());
+
+        ///- Wait for already started DB delay threads to end
+        return false;
+    }
+
     ///- Get the realm Id from the configuration file
     realmID = sConfig.GetIntDefault("RealmID", 0);
     if(!realmID)

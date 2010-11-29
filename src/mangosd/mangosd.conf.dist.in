@@ -57,6 +57,7 @@ LogsDir = ""
 LoginDatabaseInfo     = "127.0.0.1;3306;mangos;mangos;realmd"
 WorldDatabaseInfo     = "127.0.0.1;3306;mangos;mangos;mangos"
 CharacterDatabaseInfo = "127.0.0.1;3306;mangos;mangos;characters"
+LogDatabaseInfo       = "127.0.0.1;3306;mangos;mangos;log"
 MaxPingTime = 30
 WorldServerPort = 8085
 BindIP = "0.0.0.0"
@@ -361,6 +362,119 @@ GmLogTimestamp = 0
 GmLogPerAccount = 0
 RaLogFile = ""
 LogColors = ""
+
+###################################################################################################################
+# LEXXIC CUTTER
+# Chat log parameters
+# ChatLogEnable = 0
+#
+# If this is enabled, all $d in file names are replaced with current date
+# This does include innormative lexics log
+# ChatLogDateSplit = 1
+#
+# If this is enabled, UTF8 header is written into new files
+# ChatLogUTFHeader = 1
+#
+# If this is enabled, chat log will ignore messages with unprintable chars
+# ChatLogIgnoreUnprintable = 1
+#
+# Chat log files
+# ChatLogChatFile = main_chat-$d.log
+# ChatLogPartyFile = party_chat-$d.log
+# ChatLogGuildFile = guild_chat-$d.log
+# ChatLogWhisperFile = whisper_chat-$d.log
+# ChatLogChannelFile = channel_chat-$d.log
+# ChatLogRaidFile = raid_chat-$d.log
+# ChatLogBattleGroundFile = bg_chat-$d.log
+#
+# Chat log screen logging
+# ChatLogChatScreen = 0
+# ChatLogPartyScreen = 0
+# ChatLogGuildScreen = 0
+# ChatLogWhisperScreen = 0
+# ChatLogChannelScreen = 0
+# ChatLogRaidScreen = 0
+# ChatLogBattleGroundScreen = 0
+#
+# Lexics cutter parameters
+# LexicsCutterEnable = 1
+#
+# LexicsCutterInnormativeCut = 1
+# LexicsCutterCutReplacement = &!@^%!^&*!!!
+# LexicsCutterLogFile = innormative-$d.log
+# LexicsCutterScreenLog = 0
+# LexicsCutterAnalogsFile = letter_analogs.txt
+# LexicsCutterWordsFile = innormative_words.txt
+#
+# Where to cut lexics
+# LexicsCutInChat = 1
+# LexicsCutInParty = 1
+# LexicsCutInGuild = 1
+# LexicsCutInWhisper = 1
+# LexicsCutInChannel = 1
+# LexicsCutInRaid = 1
+# LexicsCutInBattleGround = 1
+#
+# Ignore word spaces like: W O R D
+# LexicsCutterIgnoreSpaces = 1
+#
+# Ignore repeats like: WWOOOORRRRRD
+# LexicsCutterIgnoreRepeats = 1
+#
+# --- Action:
+# ---   0: log only
+# ---   1: sheep
+# ---   2: stun
+# ---   3: kill
+# ---   4: leave 5 health
+# ---   5: disable chat
+# ---   6: stuck (works as stun + 50% health)
+# ---   7: resurrection sickness
+# ---   8: shear
+# LexicsCutterAction = 0
+# LexicsCutterActionDuration = 60000
+#
+# Do not perform action on GM if this is enabled
+# LexicsCutterNoActionOnGM = 1
+###################################################################################################################
+
+ChatLogEnable = 1
+ChatLogDateSplit = 1
+ChatLogUTFHeader = 1
+ChatLogIgnoreUnprintable = 1
+ChatLogChatFile = ../../THE_LOGS/CHAT/SAY/main_chat-$d.log
+ChatLogPartyFile = ../../THE_LOGS/CHAT/GRUPO/party_chat-$d.log
+ChatLogGuildFile = ../../THE_LOGS/CHAT/GUILD/guild_chat-$d.log
+ChatLogWhisperFile = ../../THE_LOGS/CHAT/WISP/whisper_chat-$d.log
+ChatLogChannelFile = ../../THE_LOGS/CHAT/CHANNEL/channel_chat-$d.log
+ChatLogRaidFile = ../../THE_LOGS/CHAT/RAID/raid_chat-$d.log
+ChatLogBattleGroundFile = ../../THE_LOGS/CHAT/BG/bg_chat-$d.log
+ChatLogChatScreen = 0
+ChatLogPartyScreen = 0
+ChatLogGuildScreen = 0
+ChatLogWhisperScreen = 0
+ChatLogChannelScreen = 0
+ChatLogRaidScreen = 0
+ChatLogBattleGroundScreen = 0
+LexicsCutterEnable = 0
+LexicsCutterInnormativeCut = 1
+LexicsCutterCutReplacement = &!@^%!^&*!!!
+LexicsCutterLogFile = innormative-$d.log
+LexicsCutterScreenLog = 0
+LexicsCutterAnalogsFile = letter_analogs.txt
+LexicsCutterWordsFile = innormative_words.txt
+LexicsCutInChat = 0
+LexicsCutInParty = 0
+LexicsCutInGuild = 0
+LexicsCutInWhisper = 0
+LexicsCutInChannel = 0
+LexicsCutInRaid = 0
+LexicsCutInBattleGround = 0
+LexicsCutterIgnoreSpaces = 0
+LexicsCutterIgnoreRepeats = 0
+LexicsCutterAction = 0
+LexicsCutterActionDuration = 60000
+LexicsCutterNoActionOnGM = 1
 
 ###################################################################################################################
 # SERVER SETTINGS
