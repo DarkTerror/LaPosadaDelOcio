@@ -120,6 +120,14 @@ ChatCommand * ChatHandler::getCommandTable()
         { NULL,             0,                  false, NULL,                                           "", NULL }
     };
 
+    static ChatCommand sbanCommandTable[] =
+    {
+        { "account",        SEC_GAMEMASTER,     true,  &ChatHandler::HandlesBanAccountCommand,          "", NULL },
+        { "character",      SEC_GAMEMASTER,     true,  &ChatHandler::HandlesBanCharacterCommand,        "", NULL },
+        { "ip",             SEC_ADMINISTRATOR,  true,  &ChatHandler::HandlesBanIPCommand,               "", NULL },
+        { NULL,             0,                  false, NULL,                                           "", NULL }
+    };
+
     static ChatCommand baninfoCommandTable[] =
     {
         { "account",        SEC_GAMEMASTER,     true,  &ChatHandler::HandleBanInfoAccountCommand,      "", NULL },
@@ -710,6 +718,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "kick",           SEC_GAMEMASTER,     true,  &ChatHandler::HandleKickPlayerCommand,          "", NULL },
         { "skick",          SEC_GAMEMASTER,     true,  &ChatHandler::HandlesKickPlayerCommand,         "", NULL },
         { "ban",            SEC_GAMEMASTER,     true,  NULL,                                           "", banCommandTable      },
+        { "sban",           SEC_GAMEMASTER,     true,  NULL,                                           "", sbanCommandTable     },
         { "unban",          SEC_GAMEMASTER,     true,  NULL,                                           "", unbanCommandTable    },
         { "baninfo",        SEC_GAMEMASTER,     false, NULL,                                           "", baninfoCommandTable  },
         { "banlist",        SEC_GAMEMASTER,     true,  NULL,                                           "", banlistCommandTable  },

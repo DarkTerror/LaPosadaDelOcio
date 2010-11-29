@@ -147,8 +147,11 @@ class ChatHandler
         bool HandleAchievementCriteriaRemoveCommand(char* args);
 
         bool HandleBanAccountCommand(char* args);
+        bool HandlesBanAccountCommand(char* args);
         bool HandleBanCharacterCommand(char* args);
+        bool HandlesBanCharacterCommand(char* args);
         bool HandleBanIPCommand(char* args);
+        bool HandlesBanIPCommand(char* args);
         bool HandleBanInfoAccountCommand(char* args);
         bool HandleBanInfoCharacterCommand(char* args);
         bool HandleBanInfoIPCommand(char* args);
@@ -625,6 +628,7 @@ class ChatHandler
         bool LookupPlayerSearchCommand(QueryResult* result, uint32* limit = NULL);
         bool HandleBanListHelper(QueryResult* result);
         bool HandleBanHelper(BanMode mode, char* args);
+        bool HandlesBanHelper(BanMode mode, char* args);
         bool HandleBanInfoHelper(uint32 accountid, char const* accountname);
         bool HandleUnBanHelper(BanMode mode, char* args);
         void HandleCharacterLevel(Player* player, uint64 player_guid, uint32 oldlevel, uint32 newlevel);

@@ -5230,7 +5230,103 @@ bool ChatHandler::HandleBanIPCommand(char* args)
     return HandleBanHelper(BAN_IP, args);
 }
 
+bool ChatHandler::HandlesBanAccountCommand(char* args)
+{
+    return HandlesBanHelper(BAN_ACCOUNT, args);
+}
+
+bool ChatHandler::HandlesBanCharacterCommand(char* args)
+{
+    return HandlesBanHelper(BAN_CHARACTER, args);
+}
+
+bool ChatHandler::HandlesBanIPCommand(char* args)
+{
+    return HandlesBanHelper(BAN_IP, args);
+}
+
 bool ChatHandler::HandleBanHelper(BanMode mode, char* args)
+{
+    if (!*args)
+        return false;
+
+    char* cnameOrIP = ExtractArg(&args);
+    if (!cnameOrIP)
+        return false;
+
+    std::string nameOrIP = cnameOrIP;
+
+    char* duration = ExtractArg(&args);                     // time string
+    if(!duration)
+        return false;
+
+    uint32 duration_secs = TimeStringToSecs(duration);
+
+    char* reason = ExtractArg(&args);
+    if(!reason)
+        return false;
+
+    switch(mode)
+    {
+        case BAN_ACCOUNT:
+            if (!AccountMgr::normalizeString(nameOrIP))
+            {
+                PSendSysMessage(LANG_ACCOUNT_NOT_EXIST,nameOrIP.c_str());
+                SetSentErrorMessage(true);
+                return false;
+            }
+            break;
+        case BAN_CHARACTER:
+            if(!normalizePlayerName(nameOrIP))
+            {
+                SendSysMessage(LANG_PLAYER_NOT_FOUND);
+                SetSentErrorMessage(true);
+                return false;
+            }
+            break;
+        case BAN_IP:
+            if(!IsIPAddress(nameOrIP.c_str()))
+                return false;
+            break;
+    }
+
+    switch(sWorld.BanAccount(mode, nameOrIP, duration_secs, reason,m_session ? m_session->GetPlayerName() : ""))
+    {
+        case BAN_SUCCESS:
+            if (duration_secs > 0)
+            {
+                PSendSysMessage(LANG_BAN_YOUBANNED, nameOrIP.c_str(), secsToTimeString(duration_secs,true).c_str(), reason);
+                sWorld.SendWorldText(LANG_BAN_WORLD_ANNOUNCE, nameOrIP.c_str(), m_session ? m_session->GetPlayerName() : "", secsToTimeString(TimeStringToSecs(duration),true).c_str(), reason);
+            }
+            else
+            {
+                PSendSysMessage(LANG_BAN_YOUPERMBANNED, nameOrIP.c_str(), reason);
+                sWorld.SendWorldText(LANG_PERMBAN_WORLD_ANNOUNCE, nameOrIP.c_str(), m_session ? m_session->GetPlayerName() : "", reason);
+            }
+            break;
+        case BAN_SYNTAX_ERROR:
+            return false;
+        case BAN_NOTFOUND:
+            switch(mode)
+            {
+                default:
+                    PSendSysMessage(LANG_BAN_NOTFOUND,"account", nameOrIP.c_str());
+                    break;
+                case BAN_CHARACTER:
+                    PSendSysMessage(LANG_BAN_NOTFOUND,"character", nameOrIP.c_str());
+                    break;
+                case BAN_IP:
+                    PSendSysMessage(LANG_BAN_NOTFOUND,"ip", nameOrIP.c_str());
+                    break;
+            }
+            SetSentErrorMessage(true);
+            return false;
+    }
+
+    return true;
+}
+
+bool ChatHandler::HandlesBanHelper(BanMode mode, char* args)
 {
     if (!*args)
         return false;

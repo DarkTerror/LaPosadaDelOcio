@@ -887,7 +887,10 @@ enum MangosStrings
     LANG_ACHIEVEMENT_NOT_EXIST          = 1163,
     LANG_ACHIEVEMENT_CRITERIA_NOT_EXIST = 1164,
     LANG_SPELL_NO_HAVE_AURAS            = 1165,
-    // Room for more level 3              1166-1199 not used
+    // Room for more level 3              1166-1197 not used
+    // Anuncios de baneo
+    LANG_BAN_WORLD_ANNOUNCE             = 1198,
+    LANG_PERMBAN_WORLD_ANNOUNCE         = 1199,
 
     // Debug commands
     LANG_CINEMATIC_NOT_EXIST            = 1200,
