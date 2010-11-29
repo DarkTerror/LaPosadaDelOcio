@@ -708,6 +708,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "save",           SEC_PLAYER,         false, &ChatHandler::HandleSaveCommand,                "", NULL },
         { "saveall",        SEC_GAMEMASTER,     true,  &ChatHandler::HandleSaveAllCommand,             "", NULL },
         { "kick",           SEC_GAMEMASTER,     true,  &ChatHandler::HandleKickPlayerCommand,          "", NULL },
+        { "skick",          SEC_GAMEMASTER,     true,  &ChatHandler::HandlesKickPlayerCommand,         "", NULL },
         { "ban",            SEC_GAMEMASTER,     true,  NULL,                                           "", banCommandTable      },
         { "unban",          SEC_GAMEMASTER,     true,  NULL,                                           "", unbanCommandTable    },
         { "baninfo",        SEC_GAMEMASTER,     false, NULL,                                           "", baninfoCommandTable  },

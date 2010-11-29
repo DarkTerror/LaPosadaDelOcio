@@ -550,6 +550,7 @@ class ChatHandler
         bool HandleBankCommand(char* args);
         bool HandleChangeWeatherCommand(char* args);
         bool HandleKickPlayerCommand(char* args);
+        bool HandlesKickPlayerCommand(char* args);
 
         bool HandleTicketCommand(char* args);
         bool HandleDelTicketCommand(char* args);

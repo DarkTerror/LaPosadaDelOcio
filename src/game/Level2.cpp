@@ -2471,6 +2471,31 @@ bool ChatHandler::HandleKickPlayerCommand(char *args)
 
     // send before target pointer invalidate
     PSendSysMessage(LANG_COMMAND_KICKMESSAGE, GetNameLink(target).c_str());
+    sWorld.SendWorldText(LANG_KICK_WORLD_ANNOUNCE, GetNameLink(target).c_str());
+    target->GetSession()->KickPlayer();
+    return true;
+}
+
+//kick player
+bool ChatHandler::HandlesKickPlayerCommand(char *args)
+{
+    Player* target;
+    if (!ExtractPlayerTarget(&args, &target))
+        return false;
+
+    if (m_session && target == m_session->GetPlayer())
+    {
+        SendSysMessage(LANG_COMMAND_KICKSELF);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // check online security
+    if (HasLowerSecurity(target, 0))
+        return false;
+
+    // send before target pointer invalidate
+    PSendSysMessage(LANG_COMMAND_KICKMESSAGE, GetNameLink(target).c_str());
     target->GetSession()->KickPlayer();
     return true;
 }
