@@ -2500,7 +2500,7 @@ void Player::GiveXP(uint32 xp, Unit* victim)
     if ( xp < 1 )
         return;
 
-    if(!isAlive())
+    if(!isAlive() && !GetBattleGroundId())
         return;
 
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_XP_USER_DISABLED))

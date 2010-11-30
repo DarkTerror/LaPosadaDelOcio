@@ -440,6 +440,7 @@ class BattleGround
         void RewardHonorToTeam(uint32 Honor, Team team);
         void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, Team team);
         void RewardMark(Player *plr,uint32 count);
+        void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
         void SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count);
         void RewardItem(Player *plr, uint32 item_id, uint32 count);
         void RewardQuestComplete(Player *plr);
