@@ -2236,6 +2236,130 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
 
                     break;
                 }
+                // Deathbringer's Will (Item - Icecrown 25 Normal Melee Trinket)
+                //=====================================================
+                // 71492 Speed of the Vrykul: +600 haste rating (Death Knight, Druid, Paladin, Rogue, Warrior, Shaman)
+                // 71485 Agility of the Vrykul: +600 agility (Druid, Hunter, Rogue, Shaman)
+                // 71486 Power of the Taunka: +1200 attack power (Hunter, Rogue, Shaman)
+                // 71484 Strength of the Taunka: +600 strength (Death Knight, Druid, Paladin, Warrior)
+                // 71491 Aim of the Iron Dwarves: +600 critical strike rating (Death Knight, Hunter, Paladin, Warrior)
+                case 71519:
+                {
+                    if(GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // Select class defined buff
+                    switch (getClass())
+                    {
+                        case CLASS_PALADIN:
+                        {
+                            uint32 RandomSpell[]={71492,71484,71491};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_DRUID:
+                        {
+                            uint32 RandomSpell[]={71492,71485,71484};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_ROGUE:
+                        {
+                            uint32 RandomSpell[]={71492,71485,71486};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_WARRIOR:
+                        {
+                            uint32 RandomSpell[]={71492,71484,71491};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_SHAMAN:
+						{
+                            uint32 RandomSpell[]={71485,71486,71492};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_HUNTER:
+                        {
+                            uint32 RandomSpell[]={71485,71486,71491};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_DEATH_KNIGHT:
+                        {
+                            uint32 RandomSpell[]={71484,71492,71491};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        default:
+                            return SPELL_AURA_PROC_FAILED;
+                    }
+                    break;
+                }
+                // Deathbringer's Will (Item - Icecrown 25 Heroic Melee Trinket)
+                //=====================================================
+                // 71560 Speed of the Vrykul: +700 haste rating (Death Knight, Druid, Paladin, Rogue, Warrior, Shaman)
+                // 71556 Agility of the Vrykul: +700 agility (Druid, Hunter, Rogue, Shaman)
+                // 71558 Power of the Taunka: +1400 attack power (Hunter, Rogue, Shaman)
+                // 71561 Strength of the Taunka: +700 strength (Death Knight, Druid, Paladin, Warrior)
+                // 71559 Aim of the Iron Dwarves: +700 critical strike rating (Death Knight, Hunter, Paladin, Warrior)
+                case 71562:
+                {
+                    if(GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // Select class defined buff
+                    switch (getClass())
+                    {
+                        case CLASS_PALADIN:
+                        {
+                            uint32 RandomSpell[]={71560,71561,71559};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_DRUID:
+                        {
+                            uint32 RandomSpell[]={71560,71556,71561};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_ROGUE:
+                        {
+                            uint32 RandomSpell[]={71560,71556,71558,};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_WARRIOR:
+                        {
+                            uint32 RandomSpell[]={71560,71561,71559,};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_SHAMAN:
+						{
+                            uint32 RandomSpell[]={71556,71558,71560};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_HUNTER:
+                        {
+                            uint32 RandomSpell[]={71556,71558,71559};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        case CLASS_DEATH_KNIGHT:
+                        {
+                            uint32 RandomSpell[]={71561,71560,71559};
+                            triggered_spell_id = RandomSpell[ irand(0, sizeof(RandomSpell)/sizeof(uint32) - 1) ];
+                            break;
+                        }
+                        default:
+                            return SPELL_AURA_PROC_FAILED;
+                    }
+                    break;
+                }
             }
             break;
         }
@@ -3199,6 +3323,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     if (GetStat(STAT_AGILITY)  > stat) { trigger_spell_id = 67772;                               }
                     break;
                 }
+                // Mark of the Fallen Champion (boss spell)
+                case 72293:
+                    CastSpell(pVictim, trigger_spell_id, true, NULL, NULL, pVictim->GetGUID());
+                    return SPELL_AURA_PROC_OK;
+                break;
             }
             break;
         case SPELLFAMILY_MAGE:
