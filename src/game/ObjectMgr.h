@@ -675,6 +675,8 @@ extern LanguageDesc lang_description[LANGUAGES_COUNT];
 MANGOS_DLL_SPEC LanguageDesc const* GetLanguageDescByID(uint32 lang);
 
 class PlayerDumpReader;
+// vehicle system
+#define MAX_VEHICLE_SPELLS 6
 
 template<typename T>
 class IdGenerator
@@ -693,6 +695,16 @@ class IdGenerator
         char const* m_name;
         T m_nextGuid;
 };
+
+struct VehicleDataStructure
+{
+    uint32 v_flags;                                         // vehicle flags, see enum CustomVehicleFLags
+    uint32 v_spells[MAX_VEHICLE_SPELLS];                    // spells
+    uint32 req_aura;                                        // requieres aura on player to enter (eg. in wintergrasp)
+};
+
+typedef UNORDERED_MAP<uint32, VehicleDataStructure> VehicleDataMap;
+typedef std::map<uint32,uint32> VehicleSeatDataMap;
 
 class ObjectMgr
 {
@@ -984,6 +996,9 @@ class ObjectMgr
         void LoadVendors() { LoadVendors("npc_vendor", false); }
         void LoadTrainerSpell();
 
+        void LoadVehicleData();
+        void LoadVehicleSeatData();
+
         std::string GeneratePetName(uint32 entry);
         uint32 GetBaseXP(uint32 level) const;
         uint32 GetXPForLevel(uint32 level) const;
@@ -1262,6 +1277,24 @@ class ObjectMgr
 
         int GetOrNewIndexForLocale(LocaleConstant loc);
 
+        VehicleDataMap mVehicleData;
+        VehicleSeatDataMap mVehicleSeatData;
+
+        uint32 GetSeatFlags(uint32 seatid)
+        {
+            VehicleSeatDataMap::iterator i = mVehicleSeatData.find(seatid);
+            if(i == mVehicleSeatData.end())
+                return NULL;
+            else
+                return i->second;
+        }
+        VehicleDataStructure const* GetVehicleData(uint32 entry) const
+        {
+            VehicleDataMap::const_iterator itr = mVehicleData.find(entry);
+            if(itr==mVehicleData.end()) return NULL;
+            return &itr->second;
+        }
+
         SpellClickInfoMapBounds GetSpellClickInfoMapBounds(uint32 creature_id) const
         {
             return mSpellClickInfoMap.equal_range(creature_id);
@@ -1338,6 +1371,7 @@ class ObjectMgr
         ObjectGuidGenerator<HIGHGUID_GAMEOBJECT> m_GameobjectGuids;
         ObjectGuidGenerator<HIGHGUID_CORPSE>     m_CorpseGuids;
         ObjectGuidGenerator<HIGHGUID_INSTANCE>   m_InstanceGuids;
+        ObjectGuidGenerator<HIGHGUID_VEHICLE>    m_VehicleGuids;
 
         QuestMap            mQuestTemplates;
 
@@ -1409,6 +1443,7 @@ class ObjectMgr
         void CheckScriptTexts(ScriptMapMap const& scripts,std::set<int32>& ids);
         void LoadCreatureAddons(SQLStorage& creatureaddons, char const* entryName, char const* comment);
         void ConvertCreatureAddonAuras(CreatureDataAddon* addon, char const* table, char const* guidEntryStr);
+        void ConvertCreatureAddonPassengers(CreatureDataAddon* addon, char const* table, char const* guidEntryStr);
         void LoadQuestRelationsHelper(QuestRelationsMap& map, char const* table);
         void LoadVendors(char const* tableName, bool isTemplates);
 

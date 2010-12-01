@@ -538,6 +538,8 @@ ChatCommand * ChatHandler::getCommandTable()
         { "spell_scripts",               SEC_GAMEMASTER,    true,  &ChatHandler::HandleReloadSpellScriptsCommand,            "", NULL },
         { "spell_target_position",       SEC_GAMEMASTER,    true,  &ChatHandler::HandleReloadSpellTargetPositionCommand,     "", NULL },
         { "spell_threats",               SEC_GAMEMASTER,    true,  &ChatHandler::HandleReloadSpellThreatsCommand,            "", NULL },
+        { "vehicle_data",                SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadVehicleDataCommand,             "", NULL },
+        { "vehicle_seat_data",           SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadVehicleSeatDataCommand,         "", NULL },
         { "spell_disabled",              SEC_GAMEMASTER,    true,  &ChatHandler::HandleReloadSpellDisabledCommand,           "", NULL },
         { NULL,                          0,                 false, NULL,                                                     "", NULL }
     };
@@ -2052,7 +2054,7 @@ Creature* ChatHandler::getSelectedCreature()
     if(!m_session)
         return NULL;
 
-    return m_session->GetPlayer()->GetMap()->GetAnyTypeCreature(m_session->GetPlayer()->GetSelectionGuid());
+    return ObjectAccessor::GetAnyTypeCreature(*m_session->GetPlayer(),m_session->GetPlayer()->GetSelectionGuid());
 }
 
 /**

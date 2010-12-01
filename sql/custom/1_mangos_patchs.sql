@@ -423,3 +423,1256 @@ INSERT INTO `battleground_events` VALUES
 ('618','252','0','buffs'),
 ('618','254','0','doors');
 UPDATE `gameobject_template` SET `faction` = 114, `flags` = 32 WHERE `entry` IN (192704,192705,192388,192387,192393,192394,192389,192390);
+-- v01_vehicle_table.sql
+DROP TABLE IF EXISTS `vehicle_data`;
+CREATE TABLE `vehicle_data` (
+  `entry` mediumint(5) unsigned NOT NULL,
+  `flags` mediumint(8) unsigned NOT NULL default '0',
+  `Spell1` mediumint(8) unsigned NOT NULL default '0',
+  `Spell2` mediumint(8) unsigned NOT NULL default '0',
+  `Spell3` mediumint(8) unsigned NOT NULL default '0',
+  `Spell4` mediumint(8) unsigned NOT NULL default '0',
+  `Spell5` mediumint(8) unsigned NOT NULL default '0',
+  `Spell6` mediumint(8) unsigned NOT NULL default '0',
+  `Spell7` mediumint(8) unsigned NOT NULL default '0',
+  `Spell8` mediumint(8) unsigned NOT NULL default '0',
+  `Spell9` mediumint(8) unsigned NOT NULL default '0',
+  `Spell10` mediumint(8) unsigned NOT NULL default '0',
+  `req_aura` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`entry`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Vehicle System';
+
+DROP TABLE IF EXISTS `vehicle_seat_data`;
+CREATE TABLE `vehicle_seat_data` (
+  `seat` mediumint(5) unsigned NOT NULL,
+  `flags` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`seat`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Vehicle Seat System';
+
+ALTER TABLE creature_addon
+  ADD COLUMN  vehicle_id  smallint(5) unsigned NOT NULL default '0' AFTER moveflags,
+  ADD COLUMN  passengers  text AFTER vehicle_id;
+
+ALTER TABLE creature_template_addon
+  ADD COLUMN  vehicle_id  smallint(5) unsigned NOT NULL default '0' AFTER moveflags,
+  ADD COLUMN  passengers  text AFTER vehicle_id;
+
+/* vehicle multi seat mounts */
+ALTER TABLE creature_template
+  ADD COLUMN `VehicleEntry` mediumint(8) unsigned NOT NULL default '0' AFTER `PetSpellDataId`;
+-- v02_vehicle_table.sql
+REPLACE INTO `vehicle_data` VALUES
+(1,0,0,0,0,0,0,0,0,0,0,0,0),(6,0,0,0,0,0,0,0,0,0,0,0,0),(7,0,0,0,0,0,0,0,0,0,0,0,0),
+(8,0,0,0,0,0,0,0,0,0,0,0,0),(14,0,0,0,0,0,0,0,0,0,0,0,0),(16,0,0,0,0,0,0,0,0,0,0,0,0),
+(17,0,0,0,0,0,0,0,0,0,0,0,0),(21,0,0,0,0,0,0,0,0,0,0,0,0),(22,0,0,0,0,0,0,0,0,0,0,0,0),
+(23,0,0,0,0,0,0,0,0,0,0,0,0),(24,0,0,0,0,0,0,0,0,0,0,0,0),(25,0,0,0,0,0,0,0,0,0,0,0,0),
+(26,0,0,0,0,0,0,0,0,0,0,0,0),(27,0,0,0,0,0,0,0,0,0,0,0,0),(28,0,0,0,0,0,0,0,0,0,0,0,0),
+(29,0,0,0,0,0,0,0,0,0,0,0,0),(30,0,0,0,0,0,0,0,0,0,0,0,0),(31,0,0,0,0,0,0,0,0,0,0,0,0),
+(32,0,0,0,0,0,0,0,0,0,0,0,0),(33,0,0,0,0,0,0,0,0,0,0,0,0),(34,0,0,0,0,0,0,0,0,0,0,0,0),
+(35,0,0,0,0,0,0,0,0,0,0,0,0),(36,0,0,0,0,0,0,0,0,0,0,0,0),(37,0,0,0,0,0,0,0,0,0,0,0,0),
+(38,0,0,0,0,0,0,0,0,0,0,0,0),(39,0,0,0,0,0,0,0,0,0,0,0,0),(40,0,0,0,0,0,0,0,0,0,0,0,0),
+(41,0,0,0,0,0,0,0,0,0,0,0,0),(42,0,0,0,0,0,0,0,0,0,0,0,0),(43,0,0,0,0,0,0,0,0,0,0,0,0),
+(44,0,0,0,0,0,0,0,0,0,0,0,0),(46,0,0,0,0,0,0,0,0,0,0,0,0),(47,0,0,0,0,0,0,0,0,0,0,0,0),
+(48,0,0,0,0,0,0,0,0,0,0,0,0),(49,0,0,0,0,0,0,0,0,0,0,0,0),(50,0,0,0,0,0,0,0,0,0,0,0,0),
+(51,0,0,0,0,0,0,0,0,0,0,0,0),(52,0,0,0,0,0,0,0,0,0,0,0,0),(53,0,0,0,0,0,0,0,0,0,0,0,0),
+(54,0,0,0,0,0,0,0,0,0,0,0,0),(55,0,0,0,0,0,0,0,0,0,0,0,0),(56,0,0,0,0,0,0,0,0,0,0,0,0),
+(57,0,0,0,0,0,0,0,0,0,0,0,0),(58,0,0,0,0,0,0,0,0,0,0,0,0),(59,0,0,0,0,0,0,0,0,0,0,0,0),
+(60,0,0,0,0,0,0,0,0,0,0,0,0),(61,0,0,0,0,0,0,0,0,0,0,0,0),(62,0,0,0,0,0,0,0,0,0,0,0,0),
+(64,0,0,0,0,0,0,0,0,0,0,0,0),(65,0,0,0,0,0,0,0,0,0,0,0,0),(68,0,0,0,0,0,0,0,0,0,0,0,0),
+(69,0,0,0,0,0,0,0,0,0,0,0,0),(70,0,0,0,0,0,0,0,0,0,0,0,0),(71,0,0,0,0,0,0,0,0,0,0,0,0),
+(72,0,0,0,0,0,0,0,0,0,0,0,0),(74,0,0,0,0,0,0,0,0,0,0,0,0),(75,0,0,0,0,0,0,0,0,0,0,0,0),
+(76,0,0,0,0,0,0,0,0,0,0,0,0),(77,0,0,0,0,0,0,0,0,0,0,0,0),(79,0,0,0,0,0,0,0,0,0,0,0,0),
+(80,0,0,0,0,0,0,0,0,0,0,0,0),(81,0,0,0,0,0,0,0,0,0,0,0,0),(86,0,0,0,0,0,0,0,0,0,0,0,0),
+(87,0,0,0,0,0,0,0,0,0,0,0,0),(88,0,0,0,0,0,0,0,0,0,0,0,0),(89,0,0,0,0,0,0,0,0,0,0,0,0),
+(90,0,0,0,0,0,0,0,0,0,0,0,0),(91,0,0,0,0,0,0,0,0,0,0,0,0),(92,0,0,0,0,0,0,0,0,0,0,0,0),
+(93,0,0,0,0,0,0,0,0,0,0,0,0),(97,0,0,0,0,0,0,0,0,0,0,0,0),(99,0,0,0,0,0,0,0,0,0,0,0,0),
+(100,0,0,0,0,0,0,0,0,0,0,0,0),(102,0,0,0,0,0,0,0,0,0,0,0,0),(104,0,0,0,0,0,0,0,0,0,0,0,0),
+(105,0,0,0,0,0,0,0,0,0,0,0,0),(106,0,0,0,0,0,0,0,0,0,0,0,0),(107,0,0,0,0,0,0,0,0,0,0,0,0),
+(108,0,0,0,0,0,0,0,0,0,0,0,0),(109,0,0,0,0,0,0,0,0,0,0,0,0),(110,0,0,0,0,0,0,0,0,0,0,0,0),
+(111,0,0,0,0,0,0,0,0,0,0,0,0),(112,0,0,0,0,0,0,0,0,0,0,0,0),(113,0,0,0,0,0,0,0,0,0,0,0,0),
+(114,0,0,0,0,0,0,0,0,0,0,0,0),(115,0,0,0,0,0,0,0,0,0,0,0,0),(116,0,0,0,0,0,0,0,0,0,0,0,0),
+(117,0,0,0,0,0,0,0,0,0,0,0,0),(118,0,0,0,0,0,0,0,0,0,0,0,0),(120,0,0,0,0,0,0,0,0,0,0,0,0),
+(121,0,0,0,0,0,0,0,0,0,0,0,0),(122,0,0,0,0,0,0,0,0,0,0,0,0),(123,0,0,0,0,0,0,0,0,0,0,0,0),
+(124,0,0,0,0,0,0,0,0,0,0,0,0),(125,0,0,0,0,0,0,0,0,0,0,0,0),(126,0,0,0,0,0,0,0,0,0,0,0,0),
+(127,0,0,0,0,0,0,0,0,0,0,0,0),(128,0,0,0,0,0,0,0,0,0,0,0,0),(129,0,0,0,0,0,0,0,0,0,0,0,0),
+(130,0,0,0,0,0,0,0,0,0,0,0,0),(131,0,0,0,0,0,0,0,0,0,0,0,0),(132,0,0,0,0,0,0,0,0,0,0,0,0),
+(134,0,0,0,0,0,0,0,0,0,0,0,0),(135,0,0,0,0,0,0,0,0,0,0,0,0),(137,0,0,0,0,0,0,0,0,0,0,0,0),
+(138,0,0,0,0,0,0,0,0,0,0,0,0),(139,0,0,0,0,0,0,0,0,0,0,0,0),(142,0,0,0,0,0,0,0,0,0,0,0,0),
+(143,0,0,0,0,0,0,0,0,0,0,0,0),(145,0,0,0,0,0,0,0,0,0,0,0,0),(146,0,0,0,0,0,0,0,0,0,0,0,0),
+(147,0,0,0,0,0,0,0,0,0,0,0,0),(148,0,0,0,0,0,0,0,0,0,0,0,0),(149,0,0,0,0,0,0,0,0,0,0,0,0),
+(150,0,0,0,0,0,0,0,0,0,0,0,0),(152,0,0,0,0,0,0,0,0,0,0,0,0),(153,0,0,0,0,0,0,0,0,0,0,0,0),
+(154,0,0,0,0,0,0,0,0,0,0,0,0),(156,0,0,0,0,0,0,0,0,0,0,0,0),(158,0,0,0,0,0,0,0,0,0,0,0,0),
+(160,0,0,0,0,0,0,0,0,0,0,0,0),(162,0,0,0,0,0,0,0,0,0,0,0,0),(163,0,0,0,0,0,0,0,0,0,0,0,0),
+(164,0,0,0,0,0,0,0,0,0,0,0,0),(165,0,0,0,0,0,0,0,0,0,0,0,0),(166,0,0,0,0,0,0,0,0,0,0,0,0),
+(167,0,0,0,0,0,0,0,0,0,0,0,0),(168,0,0,0,0,0,0,0,0,0,0,0,0),(169,0,0,0,0,0,0,0,0,0,0,0,0),
+(171,0,0,0,0,0,0,0,0,0,0,0,0),(173,0,0,0,0,0,0,0,0,0,0,0,0),(174,0,0,0,0,0,0,0,0,0,0,0,0),
+(175,0,0,0,0,0,0,0,0,0,0,0,0),(176,0,0,0,0,0,0,0,0,0,0,0,0),(177,0,0,0,0,0,0,0,0,0,0,0,0),
+(178,0,0,0,0,0,0,0,0,0,0,0,0),(179,0,0,0,0,0,0,0,0,0,0,0,0),(180,0,0,0,0,0,0,0,0,0,0,0,0),
+(181,0,0,0,0,0,0,0,0,0,0,0,0),(182,0,0,0,0,0,0,0,0,0,0,0,0),(183,0,0,0,0,0,0,0,0,0,0,0,0),
+(186,0,0,0,0,0,0,0,0,0,0,0,0),(188,0,0,0,0,0,0,0,0,0,0,0,0),(189,0,0,0,0,0,0,0,0,0,0,0,0),
+(190,0,0,0,0,0,0,0,0,0,0,0,0),(191,0,0,0,0,0,0,0,0,0,0,0,0),(192,0,0,0,0,0,0,0,0,0,0,0,0),
+(193,0,0,0,0,0,0,0,0,0,0,0,0),(194,0,0,0,0,0,0,0,0,0,0,0,0),(196,0,0,0,0,0,0,0,0,0,0,0,0),
+(197,0,0,0,0,0,0,0,0,0,0,0,0),(198,0,0,0,0,0,0,0,0,0,0,0,0),(199,0,0,0,0,0,0,0,0,0,0,0,0),
+(200,0,0,0,0,0,0,0,0,0,0,0,0),(201,0,0,0,0,0,0,0,0,0,0,0,0),(202,0,0,0,0,0,0,0,0,0,0,0,0),
+(203,0,0,0,0,0,0,0,0,0,0,0,0),(204,0,0,0,0,0,0,0,0,0,0,0,0),(205,0,0,0,0,0,0,0,0,0,0,0,0),
+(206,0,0,0,0,0,0,0,0,0,0,0,0),(207,0,0,0,0,0,0,0,0,0,0,0,0),(208,0,0,0,0,0,0,0,0,0,0,0,0),
+(209,0,0,0,0,0,0,0,0,0,0,0,0),(210,0,0,0,0,0,0,0,0,0,0,0,0),(211,0,0,0,0,0,0,0,0,0,0,0,0),
+(212,0,0,0,0,0,0,0,0,0,0,0,0),(213,0,0,0,0,0,0,0,0,0,0,0,0),(214,0,0,0,0,0,0,0,0,0,0,0,0),
+(215,0,0,0,0,0,0,0,0,0,0,0,0),(216,0,0,0,0,0,0,0,0,0,0,0,0),(217,0,0,0,0,0,0,0,0,0,0,0,0),
+(218,0,0,0,0,0,0,0,0,0,0,0,0),(219,0,0,0,0,0,0,0,0,0,0,0,0),(220,0,0,0,0,0,0,0,0,0,0,0,0),
+(221,0,0,0,0,0,0,0,0,0,0,0,0),(222,0,0,0,0,0,0,0,0,0,0,0,0),(223,0,0,0,0,0,0,0,0,0,0,0,0),
+(224,0,0,0,0,0,0,0,0,0,0,0,0),(225,0,0,0,0,0,0,0,0,0,0,0,0),(226,0,0,0,0,0,0,0,0,0,0,0,0),
+(227,0,0,0,0,0,0,0,0,0,0,0,0),(228,0,0,0,0,0,0,0,0,0,0,0,0),(229,0,0,0,0,0,0,0,0,0,0,0,0),
+(230,0,0,0,0,0,0,0,0,0,0,0,0),(231,0,0,0,0,0,0,0,0,0,0,0,0),(232,0,0,0,0,0,0,0,0,0,0,0,0),
+(233,0,0,0,0,0,0,0,0,0,0,0,0),(234,0,0,0,0,0,0,0,0,0,0,0,0),(236,0,0,0,0,0,0,0,0,0,0,0,0),
+(237,0,0,0,0,0,0,0,0,0,0,0,0),(238,0,0,0,0,0,0,0,0,0,0,0,0),(240,0,0,0,0,0,0,0,0,0,0,0,0),
+(241,0,0,0,0,0,0,0,0,0,0,0,0),(242,0,0,0,0,0,0,0,0,0,0,0,0),(243,0,0,0,0,0,0,0,0,0,0,0,0),
+(244,0,0,0,0,0,0,0,0,0,0,0,0),(245,0,0,0,0,0,0,0,0,0,0,0,0),(246,0,0,0,0,0,0,0,0,0,0,0,0),
+(247,0,0,0,0,0,0,0,0,0,0,0,0),(248,0,0,0,0,0,0,0,0,0,0,0,0),(249,0,0,0,0,0,0,0,0,0,0,0,0),
+(250,0,0,0,0,0,0,0,0,0,0,0,0),(252,0,0,0,0,0,0,0,0,0,0,0,0),(253,0,0,0,0,0,0,0,0,0,0,0,0),
+(254,0,0,0,0,0,0,0,0,0,0,0,0),(255,0,0,0,0,0,0,0,0,0,0,0,0),(256,0,0,0,0,0,0,0,0,0,0,0,0),
+(257,0,0,0,0,0,0,0,0,0,0,0,0),(258,0,0,0,0,0,0,0,0,0,0,0,0),(259,0,0,0,0,0,0,0,0,0,0,0,0),
+(260,0,0,0,0,0,0,0,0,0,0,0,0),(261,0,0,0,0,0,0,0,0,0,0,0,0),(262,0,0,0,0,0,0,0,0,0,0,0,0),
+(263,0,0,0,0,0,0,0,0,0,0,0,0),(264,0,0,0,0,0,0,0,0,0,0,0,0),(265,0,0,0,0,0,0,0,0,0,0,0,0),
+(266,0,0,0,0,0,0,0,0,0,0,0,0),(267,0,0,0,0,0,0,0,0,0,0,0,0),(268,0,0,0,0,0,0,0,0,0,0,0,0),
+(269,0,0,0,0,0,0,0,0,0,0,0,0),(270,0,0,0,0,0,0,0,0,0,0,0,0),(271,0,0,0,0,0,0,0,0,0,0,0,0),
+(272,0,0,0,0,0,0,0,0,0,0,0,0),(273,0,0,0,0,0,0,0,0,0,0,0,0),(274,0,0,0,0,0,0,0,0,0,0,0,0),
+(275,0,0,0,0,0,0,0,0,0,0,0,0),(276,0,0,0,0,0,0,0,0,0,0,0,0),(277,0,0,0,0,0,0,0,0,0,0,0,0),
+(278,0,0,0,0,0,0,0,0,0,0,0,0),(279,0,0,0,0,0,0,0,0,0,0,0,0),(280,0,0,0,0,0,0,0,0,0,0,0,0),
+(281,0,0,0,0,0,0,0,0,0,0,0,0),(282,0,0,0,0,0,0,0,0,0,0,0,0),(283,0,0,0,0,0,0,0,0,0,0,0,0),
+(284,0,0,0,0,0,0,0,0,0,0,0,0),(285,0,0,0,0,0,0,0,0,0,0,0,0),(286,0,0,0,0,0,0,0,0,0,0,0,0),
+(287,0,0,0,0,0,0,0,0,0,0,0,0),(288,0,0,0,0,0,0,0,0,0,0,0,0),(289,0,0,0,0,0,0,0,0,0,0,0,0),
+(290,0,0,0,0,0,0,0,0,0,0,0,0),(291,0,0,0,0,0,0,0,0,0,0,0,0),(292,0,0,0,0,0,0,0,0,0,0,0,0),
+(293,0,0,0,0,0,0,0,0,0,0,0,0),(294,0,0,0,0,0,0,0,0,0,0,0,0),(295,0,0,0,0,0,0,0,0,0,0,0,0),
+(296,0,0,0,0,0,0,0,0,0,0,0,0),(297,0,0,0,0,0,0,0,0,0,0,0,0),(298,0,0,0,0,0,0,0,0,0,0,0,0),
+(299,0,0,0,0,0,0,0,0,0,0,0,0),(300,0,0,0,0,0,0,0,0,0,0,0,0),(301,0,0,0,0,0,0,0,0,0,0,0,0),
+(302,0,0,0,0,0,0,0,0,0,0,0,0),(303,0,0,0,0,0,0,0,0,0,0,0,0),(304,0,0,0,0,0,0,0,0,0,0,0,0),
+(305,0,0,0,0,0,0,0,0,0,0,0,0),(308,0,0,0,0,0,0,0,0,0,0,0,0),(309,0,0,0,0,0,0,0,0,0,0,0,0),
+(310,0,0,0,0,0,0,0,0,0,0,0,0),(311,0,0,0,0,0,0,0,0,0,0,0,0),(312,0,0,0,0,0,0,0,0,0,0,0,0),
+(313,0,0,0,0,0,0,0,0,0,0,0,0),(314,0,0,0,0,0,0,0,0,0,0,0,0),(315,0,0,0,0,0,0,0,0,0,0,0,0),
+(316,0,0,0,0,0,0,0,0,0,0,0,0),(317,0,0,0,0,0,0,0,0,0,0,0,0),(318,0,0,0,0,0,0,0,0,0,0,0,0),
+(320,0,0,0,0,0,0,0,0,0,0,0,0),(321,0,0,0,0,0,0,0,0,0,0,0,0),(322,0,0,0,0,0,0,0,0,0,0,0,0),
+(323,0,0,0,0,0,0,0,0,0,0,0,0),(324,0,0,0,0,0,0,0,0,0,0,0,0),(325,0,0,0,0,0,0,0,0,0,0,0,0),
+(327,0,0,0,0,0,0,0,0,0,0,0,0),(328,0,0,0,0,0,0,0,0,0,0,0,0),(329,0,0,0,0,0,0,0,0,0,0,0,0),
+(331,0,0,0,0,0,0,0,0,0,0,0,0),(332,0,0,0,0,0,0,0,0,0,0,0,0),(335,0,0,0,0,0,0,0,0,0,0,0,0),
+(336,0,0,0,0,0,0,0,0,0,0,0,0),(337,0,0,0,0,0,0,0,0,0,0,0,0),(338,0,0,0,0,0,0,0,0,0,0,0,0),
+(339,0,0,0,0,0,0,0,0,0,0,0,0),(340,0,0,0,0,0,0,0,0,0,0,0,0),(341,0,0,0,0,0,0,0,0,0,0,0,0),
+(342,0,0,0,0,0,0,0,0,0,0,0,0),(343,0,0,0,0,0,0,0,0,0,0,0,0),(344,0,0,0,0,0,0,0,0,0,0,0,0),
+(345,0,0,0,0,0,0,0,0,0,0,0,0),(347,0,0,0,0,0,0,0,0,0,0,0,0),(348,0,0,0,0,0,0,0,0,0,0,0,0),
+(349,0,0,0,0,0,0,0,0,0,0,0,0),(352,0,0,0,0,0,0,0,0,0,0,0,0),(353,0,0,0,0,0,0,0,0,0,0,0,0),
+(354,0,0,0,0,0,0,0,0,0,0,0,0),(356,0,0,0,0,0,0,0,0,0,0,0,0),(357,0,0,0,0,0,0,0,0,0,0,0,0),
+(358,0,0,0,0,0,0,0,0,0,0,0,0),(359,0,0,0,0,0,0,0,0,0,0,0,0),(363,0,0,0,0,0,0,0,0,0,0,0,0),
+(368,0,0,0,0,0,0,0,0,0,0,0,0),(369,0,0,0,0,0,0,0,0,0,0,0,0),(370,0,0,0,0,0,0,0,0,0,0,0,0),
+(371,0,0,0,0,0,0,0,0,0,0,0,0),(372,0,0,0,0,0,0,0,0,0,0,0,0),(373,0,0,0,0,0,0,0,0,0,0,0,0),
+(374,0,0,0,0,0,0,0,0,0,0,0,0),(375,0,0,0,0,0,0,0,0,0,0,0,0),(376,0,0,0,0,0,0,0,0,0,0,0,0),
+(380,0,0,0,0,0,0,0,0,0,0,0,0),(381,0,0,0,0,0,0,0,0,0,0,0,0),(385,0,0,0,0,0,0,0,0,0,0,0,0),
+(387,0,0,0,0,0,0,0,0,0,0,0,0),(388,0,0,0,0,0,0,0,0,0,0,0,0),(389,0,0,0,0,0,0,0,0,0,0,0,0),
+(390,0,0,0,0,0,0,0,0,0,0,0,0),(392,0,0,0,0,0,0,0,0,0,0,0,0),(395,0,0,0,0,0,0,0,0,0,0,0,0),
+(396,0,0,0,0,0,0,0,0,0,0,0,0),(397,0,0,0,0,0,0,0,0,0,0,0,0),(399,0,0,0,0,0,0,0,0,0,0,0,0),
+(402,0,0,0,0,0,0,0,0,0,0,0,0),(405,0,0,0,0,0,0,0,0,0,0,0,0),(412,0,0,0,0,0,0,0,0,0,0,0,0),
+(425,0,0,0,0,0,0,0,0,0,0,0,0),(430,0,0,0,0,0,0,0,0,0,0,0,0),(435,0,0,0,0,0,0,0,0,0,0,0,0),
+(436,0,0,0,0,0,0,0,0,0,0,0,0),(437,0,0,0,0,0,0,0,0,0,0,0,0),(438,0,0,0,0,0,0,0,0,0,0,0,0),
+(442,0,0,0,0,0,0,0,0,0,0,0,0),(443,0,0,0,0,0,0,0,0,0,0,0,0),(444,0,0,0,0,0,0,0,0,0,0,0,0),
+(445,0,0,0,0,0,0,0,0,0,0,0,0),(446,0,0,0,0,0,0,0,0,0,0,0,0),(447,0,0,0,0,0,0,0,0,0,0,0,0),
+(449,0,0,0,0,0,0,0,0,0,0,0,0),(452,0,0,0,0,0,0,0,0,0,0,0,0),(453,0,0,0,0,0,0,0,0,0,0,0,0),
+(456,0,0,0,0,0,0,0,0,0,0,0,0),(461,0,0,0,0,0,0,0,0,0,0,0,0),(471,0,0,0,0,0,0,0,0,0,0,0,0),
+(472,0,0,0,0,0,0,0,0,0,0,0,0),(477,0,0,0,0,0,0,0,0,0,0,0,0),(478,0,0,0,0,0,0,0,0,0,0,0,0),
+(479,0,0,0,0,0,0,0,0,0,0,0,0),(480,0,0,0,0,0,0,0,0,0,0,0,0),(481,0,0,0,0,0,0,0,0,0,0,0,0),
+(482,0,0,0,0,0,0,0,0,0,0,0,0),(483,0,0,0,0,0,0,0,0,0,0,0,0),(484,0,0,0,0,0,0,0,0,0,0,0,0),
+(485,0,0,0,0,0,0,0,0,0,0,0,0),(486,0,0,0,0,0,0,0,0,0,0,0,0),(487,0,0,0,0,0,0,0,0,0,0,0,0),
+(489,0,0,0,0,0,0,0,0,0,0,0,0),(492,0,0,0,0,0,0,0,0,0,0,0,0),(496,0,0,0,0,0,0,0,0,0,0,0,0),
+(497,0,0,0,0,0,0,0,0,0,0,0,0),(498,0,0,0,0,0,0,0,0,0,0,0,0),(499,0,0,0,0,0,0,0,0,0,0,0,0),
+(503,0,0,0,0,0,0,0,0,0,0,0,0),(509,0,0,0,0,0,0,0,0,0,0,0,0),(510,0,0,0,0,0,0,0,0,0,0,0,0),
+(512,0,0,0,0,0,0,0,0,0,0,0,0),(514,0,0,0,0,0,0,0,0,0,0,0,0),(522,0,0,0,0,0,0,0,0,0,0,0,0),
+(529,0,0,0,0,0,0,0,0,0,0,0,0),(531,0,0,0,0,0,0,0,0,0,0,0,0),(532,0,0,0,0,0,0,0,0,0,0,0,0),
+(533,0,0,0,0,0,0,0,0,0,0,0,0),(535,0,0,0,0,0,0,0,0,0,0,0,0),(548,0,0,0,0,0,0,0,0,0,0,0,0),
+(551,0,0,0,0,0,0,0,0,0,0,0,0),(554,0,0,0,0,0,0,0,0,0,0,0,0),(555,0,0,0,0,0,0,0,0,0,0,0,0),
+(560,0,0,0,0,0,0,0,0,0,0,0,0),(562,0,0,0,0,0,0,0,0,0,0,0,0),(563,0,0,0,0,0,0,0,0,0,0,0,0),
+(567,0,0,0,0,0,0,0,0,0,0,0,0),(586,0,0,0,0,0,0,0,0,0,0,0,0),(587,0,0,0,0,0,0,0,0,0,0,0,0),
+(591,0,0,0,0,0,0,0,0,0,0,0,0),(599,0,0,0,0,0,0,0,0,0,0,0,0),(602,0,0,0,0,0,0,0,0,0,0,0,0),
+(604,0,0,0,0,0,0,0,0,0,0,0,0),(610,0,0,0,0,0,0,0,0,0,0,0,0),(611,0,0,0,0,0,0,0,0,0,0,0,0),
+(614,0,0,0,0,0,0,0,0,0,0,0,0),(615,0,0,0,0,0,0,0,0,0,0,0,0),(616,0,0,0,0,0,0,0,0,0,0,0,0),
+(621,0,0,0,0,0,0,0,0,0,0,0,0),(622,0,0,0,0,0,0,0,0,0,0,0,0),(624,0,0,0,0,0,0,0,0,0,0,0,0),
+(625,0,0,0,0,0,0,0,0,0,0,0,0),(636,0,0,0,0,0,0,0,0,0,0,0,0),(637,0,0,0,0,0,0,0,0,0,0,0,0),
+(639,0,0,0,0,0,0,0,0,0,0,0,0),(647,0,0,0,0,0,0,0,0,0,0,0,0),(648,0,0,0,0,0,0,0,0,0,0,0,0),
+(655,0,0,0,0,0,0,0,0,0,0,0,0),(700,0,0,0,0,0,0,0,0,0,0,0,0),(711,0,0,0,0,0,0,0,0,0,0,0,0),
+(717,0,0,0,0,0,0,0,0,0,0,0,0),(718,0,0,0,0,0,0,0,0,0,0,0,0),(732,0,0,0,0,0,0,0,0,0,0,0,0),
+(736,0,0,0,0,0,0,0,0,0,0,0,0),(745,0,0,0,0,0,0,0,0,0,0,0,0),(746,0,0,0,0,0,0,0,0,0,0,0,0),
+(747,0,0,0,0,0,0,0,0,0,0,0,0),(753,0,0,0,0,0,0,0,0,0,0,0,0),(763,0,0,0,0,0,0,0,0,0,0,0,0),
+(774,0,0,0,0,0,0,0,0,0,0,0,0);
+
+/* Mechano-hog, Mekgineer's Chopper */
+UPDATE creature_template SET VehicleEntry = 318, IconName = 'vehichleCursor' WHERE entry IN (29929, 32286);
+
+/* Traveler's Tundra Mammoth, Grand Ice Mammoth, Grand Black War Mammoth, Grand Caravan Mammoth */
+UPDATE creature_template SET VehicleEntry = 312, IconName = 'vehichleCursor' WHERE entry IN (32633, 32640, 31857, 31858, 31861, 31862, 32212, 32213);
+
+/* X-53 Touring Rocket */
+UPDATE creature_template SET VehicleEntry = 774, IconName = 'vehichleCursor' WHERE entry = 40725;
+
+UPDATE creature_template SET minlevel = 80, maxlevel = 80 WHERE entry IN (28312,32627,28319,32629,28094,28670);
+UPDATE creature_template SET speed_run = 2, InhabitType = 1 WHERE entry IN (28312,32627,28319,32629,28094,29929,28782);
+UPDATE creature_template SET mechanic_immune_mask = 652951551 WHERE entry IN (28670,28312,32627,28319,32629,28094,29929,28782);
+
+/* Frostbrood Vanquisher */
+UPDATE creature_template SET maxhealth = 133525, minhealth = 133525, maxmana = 51360, minmana = 51360, speed_run = 2.4, InhabitType = 3 WHERE entry = 28670;
+DELETE FROM npc_spellclick_spells WHERE npc_entry in (28670);
+INSERT INTO npc_spellclick_spells VALUES (28670, 52196, 12779, 1, 12779, 0);
+REPLACE INTO vehicle_data VALUES (156, 24, 53114, 0, 53110, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1986, 3),(1987, 8);
+UPDATE quest_template SET ReqItemId1 = 39700, ReqItemCount1 = 1 WHERE entry = 12779;
+
+/* Argent Tournament (new) */
+DELETE FROM creature WHERE id IN (33844,33845);
+DELETE FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE id IN (33844,33845));
+REPLACE INTO vehicle_data VALUES (349, 24, 62544, 62575, 63010, 62552, 64077, 62863, 0, 0, 0, 0, 62853);
+REPLACE INTO vehicle_seat_data VALUES ('3129', '1');
+DELETE FROM npc_spellclick_spells WHERE npc_entry in (33842, 33843);
+INSERT INTO npc_spellclick_spells VALUES (33842,63791,13829,1,0,3),(33842,63791,13839,1,0,3),(33842,63791,13838,1,0,3),(33843,63792,13828,1,0,3),(33843,63792,13837,1,0,3),(33843,63792,13835,1,0,3);
+UPDATE creature_template SET AIName = 'NullAI' WHERE entry IN (33243,33229,33272);
+/* Alliance and Horde Tournament Mounts (DaViper fixes) */
+UPDATE creature_template SET minlevel = 80, maxlevel = 80, minhealth = 50000, maxhealth = 50000, minmana = 1000, maxmana = 1000, armor = 9730,
+speed_run = 1.5, mindmg = 420, maxdmg = 630, attackpower = 157, dmg_multiplier = 1.4, rangeattacktime = 2000, unit_flags = 8, minrangedmg = 336,
+maxrangedmg = 504, rangedattackpower = 126 WHERE entry IN (33217,33316,33317,33318,33319,33320,33321,33322,33323,33324,33844,33845);
+
+/* Quest Grand Theft Palomino (12680) */
+REPLACE INTO spell_script_target VALUES (52264,1,28653);
+REPLACE INTO vehicle_data VALUES (123, 4, 52264, 52268, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1782, 1);
+DELETE FROM npc_spellclick_spells WHERE npc_entry in (28605,28606,28607);
+INSERT INTO npc_spellclick_spells VALUES (28605, 52263, 12680, 1, 12680, 3),(28606, 52263, 12680, 1, 12680, 3),(28607, 52263, 12680, 1, 12680, 3);
+DELETE FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE id IN (28605,28606,28607));
+
+/* Quest Into the Realm of Shadows (12687) */
+REPLACE INTO spell_script_target VALUES (52349,1,28782);
+UPDATE creature_template SET faction_A = 2082, faction_H = 2082, unit_flags = 32768 WHERE entry = 28782;
+DELETE FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE id = 28782);
+REPLACE INTO vehicle_data VALUES (135, 4, 52362, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1871, 1);
+DELETE FROM npc_spellclick_spells WHERE npc_entry in (28782);
+INSERT INTO npc_spellclick_spells VALUES (28782, 52349, 12687, 1, 12687, 3);
+UPDATE quest_template SET SrcSpell = 52693 WHERE entry = 12687;
+
+/* Quest Going Bearback */
+DELETE FROM npc_spellclick_spells WHERE npc_entry in (29598);
+INSERT INTO npc_spellclick_spells VALUES (29598, 54908, 12851, 1, 12851, 1);
+REPLACE INTO `vehicle_data` VALUES (308, 24, 54897, 54907, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2699, 1);
+
+/* Massacre At Light's Point (new) */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28887,28833,28864);
+INSERT INTO npc_spellclick_spells VALUES (28833,52447,12701,1,12701,1),(28887,52447,12701,1,12701,1),(28864,67373,0,0,0,1);
+REPLACE INTO vehicle_data VALUES (143,12,0,0,0,0,0,0,0,0,0,0,0),(79,5,52435,52576,0,52588,0,0,0,0,0,0,0);
+REPLACE INTO vehicle_seat_data VALUES (1427, 1),(1902, 3);
+UPDATE creature_model_info SET bounding_radius = 0 WHERE modelid = 25723;
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (28887,28833);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (28864);
+DELETE FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE id IN (28887,28833,28864));
+
+/* Traveler's Tundra Mammoth, Grand Ice Mammoth */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (32633, 32640, 31857);
+INSERT INTO npc_spellclick_spells VALUES (32633, 65403, 0, 0, 0, 0),(32640, 65403, 0, 0, 0, 0),(31857, 65403, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (312, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+/* Salvaged Chopper */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33062);
+INSERT INTO npc_spellclick_spells VALUES (33062, 65403, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (335, 4, 62974, 62286, 62299, 64660, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3005, 3),(3004, 2);
+UPDATE creature_model_info SET bounding_radius = '0.306' WHERE modelid IN (25870,25871);
+
+/* Salvaged Demolisher */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33109);
+INSERT INTO npc_spellclick_spells VALUES (33109, 65403, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (338, 4, 62306, 62490, 62308, 62324, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3011, 3),(3146, 8),(3013, 8),(3147, 8);
+
+/* Salvaged Siege Engine */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33060);
+INSERT INTO npc_spellclick_spells VALUES (33060, 65403, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (336, 4, 62345, 62522, 62346, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3006, 3),(4026, 8),(4027, 8),(3009, 8);
+
+/* Salvaged Siege Turret */
+DELETE FROM npc_spellclick_spells WHERE npc_entry = 33067;
+INSERT INTO npc_spellclick_spells VALUES (33067, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (337, 5, 62358, 64677, 62359, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3010, 3);
+UPDATE creature_template SET minhealth = 1134000, maxhealth = 1134000, unit_flags = 32768, IconName = 'Gunner' WHERE entry = 33067;
+DELETE FROM creature WHERE id = 33067;
+
+/* Mechanic Seat Salvaged Demolisher */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33167);
+INSERT INTO npc_spellclick_spells VALUES (33167, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (345, 5, 62634, 64979, 62479, 62471, 0, 62428, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3077, 3),(3106, 8);
+UPDATE creature_template SET minhealth = 630000, maxhealth = 630000, unit_flags = 32768, IconName = 'Gunner' WHERE entry = 33167;
+DELETE FROM creature WHERE id = 33167;
+
+/* Ulduar Salvaged vehicles (unifieddb fix) */
+DELETE FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE id IN (33060,33062,33109));
+
+/* Wintergrasp Tower Cannon (new) */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28366);
+INSERT INTO npc_spellclick_spells VALUES (28366, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (244, 5, 51362, 51421, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2283, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry = 28366;
+
+/* the Oculus (new) */
+DELETE FROM spell_script_target where entry IN (49460, 49346, 49464);
+DELETE FROM npc_spellclick_spells where npc_entry IN (27755, 27692, 27756);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (27755,27756,27692);
+/* Amber Drake */
+INSERT INTO spell_script_target VALUES (49460, 1, 27755);
+INSERT INTO npc_spellclick_spells VALUES (27755, 49459, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (70, 12, 49840, 49838, 49592, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1323, 3);
+/* Emerald Drake */
+INSERT INTO spell_script_target VALUES (49346, 1, 27692);
+INSERT INTO npc_spellclick_spells VALUES (27692, 49427, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (181, 12, 50328, 50341, 50344, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2081, 3);
+/* Ruby Drake */
+INSERT INTO spell_script_target VALUES (49464, 1, 27756);
+INSERT INTO npc_spellclick_spells VALUES (27756, 49463, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (186, 12, 50232, 50248, 50240, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2089, 3);
+
+/* 7th Legion Chain Gun */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27714);
+INSERT INTO npc_spellclick_spells VALUES (27714, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (68, 5, 49190, 49550, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1301, 1);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (27714);
+
+/* Alliance Steam Tank */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27587);
+INSERT INTO npc_spellclick_spells VALUES (27587, 43695, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (56, 4, 49315, 49333, 49109, 49081, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (945, 3),(946, 8),(949, 8),(950, 8);
+REPLACE INTO spell_area (`spell`,`area`) VALUES (49081, 4246);
+UPDATE creature_template SET modelid_1 = 25341, modelid_2 = 0, modelid_3 = 0, IconName = 'vehichleCursor' WHERE entry IN (27587);
+UPDATE creature_model_info SET modelid_other_gender = 0 WHERE modelid = 25341;
+
+/* Broken-down Shredder */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27354);
+INSERT INTO npc_spellclick_spells VALUES (27354, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (49, 4, 48558, 48604, 48548, 0, 48610, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (821, 1);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (27354);
+
+/* Enraged Mammoth */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28851);
+INSERT INTO npc_spellclick_spells VALUES (28851, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (145, 4, 52603, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1906, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (28851);
+
+/* Flamebringer */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27292);
+INSERT INTO npc_spellclick_spells VALUES (27292, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (50, 4, 48619, 48620, 52812, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (841, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (27292);
+
+/* Forsaken Blight Spreader */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26523);
+INSERT INTO npc_spellclick_spells VALUES (26523, 47961, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (36, 4, 48211, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (644, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry = 26523;
+
+/* Highland Mustang */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26472);
+INSERT INTO npc_spellclick_spells VALUES (26472, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (62, 4, 49285, 29577, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1270, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (26472);
+
+/* Horde Siege Tank */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (25334);
+INSERT INTO npc_spellclick_spells VALUES (25334, 43695, 0, 0, 0, 0);
+REPLACE INTO vehicle_data VALUES (26, 4, 50672, 45750, 50677, 47849, 47962, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (365,3),(366,6),(367,6),(368,6);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry = 25334;
+
+/* Infected Kodo Beast */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (25596);
+INSERT INTO npc_spellclick_spells VALUES (25596, 45875, 11690, 1, 11690, 1);
+REPLACE INTO vehicle_data VALUES (29, 12, 45876, 45877, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (422, 3);
+UPDATE creature_template SET speed_run = 2, IconName = 'vehichleCursor' WHERE entry = 25596;
+REPLACE INTO spell_script_target VALUES (45877, 1, 25596);
+
+/* Kor'kron War Rider */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26813);
+INSERT INTO npc_spellclick_spells VALUES (26813, 47424, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (80, 4, 47434, 63507, 47454, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1431, 3),(1432, 2);
+UPDATE creature_template SET modelid_2 = 0, modelid_3 = 0, IconName = 'vehichleCursor' WHERE entry IN (26813);
+
+/* Kor'kron War Rider II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26572);
+INSERT INTO npc_spellclick_spells VALUES (26572, 47424, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (34, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (601, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (26572);
+
+/* Onslaught Warhorse */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27213);
+INSERT INTO npc_spellclick_spells VALUES (27213, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (43, 4, 48297, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (742, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry = 27213;
+
+/* Refurbished Shredder */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27496);
+INSERT INTO npc_spellclick_spells VALUES (27496, 60944, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (55, 4, 48548, 48604, 48558, 0, 48610, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (922, 1);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (27496);
+
+/* Rocket Propelled Warhead */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27593);
+INSERT INTO npc_spellclick_spells VALUES (27593, 49177, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (57, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (961, 1);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (27593);
+
+/* Steel Gate Flying Machine */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (24418);
+INSERT INTO npc_spellclick_spells VALUES (24418, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (8, 4, 44009, 43770, 43799, 43769, 47769, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (261, 1),(461, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (24418);
+
+/* Wintergarde Gryphon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27258);
+INSERT INTO npc_spellclick_spells VALUES (27258, 49288, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (44, 4, 48363, 48397, 54170, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (762, 1),(764, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (27258);
+
+/* Wintergarde Gryphon II, Into Hostile Territory quest */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27661);
+INSERT INTO npc_spellclick_spells VALUES (27661, 48862, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (61, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1267, 1),(1268, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (27661);
+
+/* Wooly Mammoth Bull */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (25743);
+INSERT INTO npc_spellclick_spells VALUES (25743, 43695, 11879, 1, 11879, 1);
+REPLACE INTO vehicle_data VALUES (72, 12, 46317, 46315, 46316, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1362, 3);
+UPDATE creature_template SET faction_A = 7, faction_H = 7, IconName = 'vehichleCursor' WHERE entry IN (25743);
+
+/* Wyrmrest Defender */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27629);
+INSERT INTO npc_spellclick_spells VALUES (27629, 49256, 12372, 1, 12372, 1);
+REPLACE INTO vehicle_data VALUES (60,4,49161,49243,49263,49264,49367,0,0,0,0,0,0);
+REPLACE INTO vehicle_seat_data VALUES (1262, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (27629);
+
+/* Wyrmrest Skytalon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry = 32535;
+INSERT INTO npc_spellclick_spells VALUES (32535, 61245, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (165, 12, 56091, 61621, 57090, 57143, 57108, 57092, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2061, 3);
+REPLACE INTO spell_script_target VALUES (61245,1,32535);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry = 32535;
+
+/* Wyrmrest Vanquisher */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27996);
+INSERT INTO npc_spellclick_spells VALUES (27996, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (99, 4, 50430, 55987, 50348, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1520, 3),(1521, 8);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (27996);
+
+/* Fizzcrank Bomber */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (25765);
+INSERT INTO npc_spellclick_spells VALUES (25765, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (492, 4, 45971, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (5506, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (25765);
+
+/* Dusk */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26191);
+INSERT INTO npc_spellclick_spells VALUES (26191, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (200, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2144, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (26191);
+
+/* Tatjana's Horse */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27626);
+INSERT INTO npc_spellclick_spells VALUES (27626, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (59, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1241, 3),(1242, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (27626);
+
+/* Antipersonnel Cannon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27894);
+INSERT INTO npc_spellclick_spells VALUES (27894, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (160, 5, 49872, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2029, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (27894);
+
+/* Antipersonnel Cannon II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (32795);
+INSERT INTO npc_spellclick_spells VALUES (32795, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (160, 5, 49872, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2029, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (32795);
+
+/* Wintergrasp Demolisher */
+UPDATE creature_template SET maxhealth = 50000, minhealth = 50000 WHERE entry = 28094;
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28094);
+INSERT INTO npc_spellclick_spells VALUES (28094, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (106, 4, 50896, 50652, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1554, 3),(1556, 6),(1557, 6);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (28094);
+
+/* Wintergrasp Siege Engine */
+UPDATE creature_template SET maxhealth = 75000, minhealth = 75000 WHERE entry IN (28312,32627);
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28312);
+INSERT INTO npc_spellclick_spells VALUES (28312, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (117, 4, 51678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1648, 3),(1649, 2),(1650, 2),(1652, 4);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (28312);
+
+/* Wintergrasp Siege Engine II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (32627);
+INSERT INTO npc_spellclick_spells VALUES (32627, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (324, 4, 51678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2863, 3),(2864, 2),(2865, 2),(2866, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (32627);
+
+/* Wintergrasp Siege Turret */
+UPDATE creature_template SET maxhealth = 50000, minhealth = 50000 WHERE entry IN (28319,32629);
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28319);
+INSERT INTO npc_spellclick_spells VALUES (28319, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (116, 5, 51362, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1643, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (28319);
+
+/* Wintergrasp Siege Turret II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (32629);
+INSERT INTO npc_spellclick_spells VALUES (32629, 60968, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (116, 5, 51362, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (1643, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (32629);
+
+/* Battleground Demolisher */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28781);
+INSERT INTO npc_spellclick_spells VALUES (28781, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (158, 4, 52338, 60206, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2021, 3),(2023, 2),(2024, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (28781);
+
+/* Battleground Demolisher II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (32796);
+INSERT INTO npc_spellclick_spells VALUES (32796, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (158, 4, 52338, 60206, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2021, 3),(2023, 2),(2024, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (32796);
+
+/* Frostbite */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (29857);
+INSERT INTO npc_spellclick_spells VALUES (29857, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (202, 4, 54996, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2164, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (29857);
+
+/* Valkyrion Harpoon Gun */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (30066);
+INSERT INTO npc_spellclick_spells VALUES (30066, 44002, 12953, 1, 12953, 1);
+REPLACE INTO vehicle_data VALUES (213, 5, 55812, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2186, 1);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (30066);
+
+/* Argent Skytalon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (30228);
+INSERT INTO npc_spellclick_spells VALUES (30228, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (234, 4, 56683, 56684, 56712, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2235, 1),(2236, 8);
+UPDATE creature_template SET IconName = 'vehichleCursor', InhabitType = 3 WHERE entry IN (30228);
+
+/* Jotunheim Rapid-Fire Harpoon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (30337);
+INSERT INTO npc_spellclick_spells VALUES (30337, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (229, 5, 0, 0, 56570, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2229, 1);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (30337);
+
+/* Nergeld */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (30403);
+INSERT INTO npc_spellclick_spells VALUES (30403, 56699, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (236, 4, 60540, 56746, 56748, 56747, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2238, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (30403);
+
+/* Kor'kron Suppression Turret */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (31884);
+INSERT INTO npc_spellclick_spells VALUES (31884, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (291, 5, 59880, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (2553, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (31884);
+
+/* Flame Leviathan Seat */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33114);
+-- INSERT INTO npc_spellclick_spells VALUES (33114, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (341, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3044, 1),(3075, 0),(3076, 0);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (33114);
+
+/* Brann's Flying Machine */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34120);
+INSERT INTO npc_spellclick_spells VALUES (34120, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (390, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (3926, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (34120);
+
+/* Catapult */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34793);
+INSERT INTO npc_spellclick_spells VALUES (34793, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (438, 4, 66218, 66296, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (4706, 3),(4726, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (34793);
+
+/* Argent Warhorse */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (36557,35644);
+INSERT INTO npc_spellclick_spells VALUES (36557, 65403, 0, 0, 0, 1),(35644, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (486, 4, 68505, 62575, 68282, 66482, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (5406, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (36557,35644);
+
+/* Argent Battleworg */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (36559,36558);
+INSERT INTO npc_spellclick_spells VALUES (36559, 65403, 0, 0, 0, 1),(36558, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (529, 4, 68282, 62575, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (6126, 3);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (36559,36558);
+
+/* Keep Cannon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34944);
+INSERT INTO npc_spellclick_spells VALUES (34944, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (510, 5, 68169, 66541, 68170, 67452, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (5786, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (34944);
+
+/* Alliance Gunship Cannon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34929);
+INSERT INTO npc_spellclick_spells VALUES (34929, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (452, 5, 69495, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (4888, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (34929);
+
+/* Alliance Gunship Cannon II */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (36838);
+INSERT INTO npc_spellclick_spells VALUES (36838, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (554, 5, 70174, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (6488, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (36838);
+
+/* Horde Gunship Cannon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34935);
+INSERT INTO npc_spellclick_spells VALUES (34935, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (453, 5, 68825, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (4906, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (34935);
+
+/* Demolisher */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (34775);
+INSERT INTO npc_spellclick_spells VALUES (34775, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (509, 4, 68068, 67440, 67442, 67441, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (5766, 3),(5767, 2),(5768, 2);
+UPDATE creature_template SET IconName = 'vehichleCursor' WHERE entry IN (34775);
+
+/* Broken Keep Cannon */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (35819);
+INSERT INTO npc_spellclick_spells VALUES (35819, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (655, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (35819);
+
+/* Flame Turret */
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (36356);
+INSERT INTO npc_spellclick_spells VALUES (36356, 65403, 0, 0, 0, 1);
+REPLACE INTO vehicle_data VALUES (436, 5, 68832, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO vehicle_seat_data VALUES (4690, 3);
+UPDATE creature_template SET IconName = 'Gunner' WHERE entry IN (36356);
+
+REPLACE INTO `creature_template_addon` (`entry`, `mount`, `bytes1`, `b2_0_sheath`, `b2_1_pvp_state`, `emote`, `moveflags`, `vehicle_id`, `passengers`, `auras`) VALUES
+(28670, 0, 50331648, 1, 0, 0, 1024, 156, NULL, '53112 0 53112 1 48602 2'),
+(33844, 0, 0, 1, 8, 0, 0, 349, NULL, NULL),
+(33845, 0, 0, 1, 8, 0, 0, 349, NULL, NULL),
+(28605, 0, 0, 1, 0, 0, 0, 123, NULL, NULL),
+(28606, 0, 0, 1, 0, 0, 0, 123, NULL, NULL),
+(28607, 0, 0, 1, 0, 0, 0, 123, NULL, NULL),
+(28782, 0, 0, 1, 0, 0, 0, 135, NULL, NULL),
+(29598, 0, 0, 1, 0, 0, 0, 308, NULL, NULL),
+(28887, 0, 0, 1, 8, 0, 0, 79, NULL, NULL),
+(28833, 0, 0, 1, 8, 0, 0, 79, NULL, NULL),
+(28864, 0, 0, 0, 0, 0, 0, 143, NULL, '48602 0 48602 2'),
+(32633, 0, 0, 0, 0, 0, 0, 312, NULL, NULL),
+(32640, 0, 0, 0, 0, 0, 0, 312, NULL, NULL),
+(31857, 0, 0, 0, 0, 0, 0, 312, NULL, NULL),
+(33062, 0, 0, 0, 0, 0, 0, 335, NULL, NULL),
+(33109, 0, 0, 0, 0, 0, 0, 338, '33167 1', NULL),
+(33060, 0, 0, 0, 0, 0, 0, 336, '33067 7', NULL),
+(33067, 0, 0, 0, 0, 0, 0, 337, NULL, NULL),
+(33167, 0, 0, 0, 0, 0, 0, 345, NULL, NULL),
+(28366, 0, 0, 0, 0, 0, 0, 244, NULL, NULL),
+(27755, 0, 0, 0, 0, 0, 0, 70, NULL, '48602 0 48602 2'),
+(27692, 0, 0, 0, 0, 0, 0, 181, NULL, '48602 0 48602 2'),
+(27756, 0, 0, 0, 0, 0, 0, 186, NULL, '48602 0 48602 2'),
+(27850, 0, 0, 0, 0, 0, 0, 0, '27905 1', NULL),
+(32930, 0, 0, 0, 0, 0, 0, 328, '32933 1 32934 7', NULL),
+(33114, 0, 0, 0, 0, 0, 0, 341, NULL, NULL),
+(33214, 0, 0, 0, 0, 0, 0, 348, '33218 1', NULL),
+(33113, 0, 0, 0, 0, 0, 0, 387, '33114 0 33114 1 33114 2 33114 3 33139 7', NULL),
+(27714, 0, 0, 0, 0, 0, 0, 68, NULL, NULL),
+(27587, 0, 0, 0, 0, 0, 0, 56, NULL, NULL),
+(27354, 0, 0, 0, 0, 0, 0, 49, NULL, NULL),
+(28851, 0, 0, 0, 0, 0, 0, 145, NULL, NULL),
+(27292, 0, 0, 0, 0, 0, 0, 50, NULL, NULL),
+(26523, 0, 0, 0, 0, 0, 0, 36, NULL, NULL),
+(26472, 0, 0, 0, 0, 0, 0, 62, NULL, NULL),
+(25334, 0, 0, 0, 0, 0, 0, 26, NULL, NULL),
+(25596, 0, 0, 0, 0, 0, 0, 29, NULL, NULL),
+(26813, 0, 0, 0, 0, 0, 0, 80, NULL, '48602 0 48602 2'),
+(26572, 0, 0, 0, 0, 0, 0, 34, NULL, '48602 0 48602 2'),
+(27213, 0, 0, 0, 0, 0, 0, 43, NULL, NULL),
+(27496, 0, 0, 0, 0, 0, 0, 55, NULL, NULL),
+(27593, 0, 0, 0, 0, 0, 0, 57, NULL, NULL),
+(24418, 0, 0, 0, 0, 0, 0, 8, NULL, '48602 0 48602 2'),
+(27258, 0, 0, 0, 0, 0, 0, 44, NULL, '48602 0 48602 2'),
+(27661, 0, 0, 0, 0, 0, 0, 61, NULL, '48602 0 48602 2'),
+(25743, 0, 0, 0, 0, 0, 0, 72, NULL, NULL),
+(27629, 0, 50331648, 1, 0, 0, 0, 60, NULL, '50069 0 50069 1 50069 2'),
+(32535, 0, 0, 0, 0, 0, 0, 165, NULL, '48602 0 48602 2'),
+(27996, 0, 50331648, 1, 0, 0, 0, 99, NULL, '48602 0 48602 2'),
+(25765, 0, 0, 0, 0, 0, 0, 492, NULL, '48602 0 48602 2'),
+(26191, 0, 0, 0, 0, 0, 0, 200, NULL, NULL),
+(27626, 0, 0, 0, 0, 0, 0, 59, NULL, NULL),
+(27894, 0, 0, 0, 0, 0, 0, 160, NULL, NULL),
+(32795, 0, 0, 0, 0, 0, 0, 160, NULL, NULL),
+(28094, 0, 0, 0, 0, 0, 0, 106, NULL, NULL),
+(28312, 0, 0, 0, 0, 0, 0, 117, '28319 7', NULL),
+(32627, 0, 0, 0, 0, 0, 0, 324, '32629 7', NULL),
+(28319, 0, 0, 0, 0, 0, 0, 116, NULL, NULL),
+(32629, 0, 0, 0, 0, 0, 0, 116, NULL, NULL),
+(28781, 0, 0, 0, 0, 0, 0, 158, NULL, NULL),
+(32796, 0, 0, 0, 0, 0, 0, 158, NULL, NULL),
+(29857, 0, 0, 0, 0, 0, 0, 202, NULL, NULL),
+(30066, 0, 0, 0, 0, 0, 0, 213, NULL, NULL),
+(30228, 0, 50331648, 1, 0, 0, 0, 234, NULL, '48602 0 48602 2'),
+(30337, 0, 0, 0, 0, 0, 0, 229, NULL, NULL),
+(30403, 0, 0, 0, 0, 0, 0, 236, NULL, NULL),
+(31884, 0, 0, 0, 0, 0, 0, 291, NULL, NULL),
+(34120, 0, 0, 0, 0, 0, 0, 390, NULL, '48602 0 48602 2'),
+(34793, 0, 0, 0, 0, 0, 0, 438, NULL, NULL),
+(36557, 0, 0, 0, 0, 0, 0, 486, NULL, NULL),
+(35644, 0, 0, 0, 0, 0, 0, 486, NULL, NULL),
+(36559, 0, 0, 0, 0, 0, 0, 529, NULL, NULL),
+(36558, 0, 0, 0, 0, 0, 0, 529, NULL, NULL),
+(34944, 0, 0, 0, 0, 0, 0, 510, NULL, NULL),
+(34929, 0, 0, 0, 0, 0, 0, 452, NULL, NULL),
+(36838, 0, 0, 0, 0, 0, 0, 554, NULL, NULL),
+(34935, 0, 0, 0, 0, 0, 0, 453, NULL, NULL),
+(34775, 0, 0, 0, 0, 0, 0, 509, NULL, NULL),
+(35819, 0, 0, 0, 0, 0, 0, 655, NULL, NULL),
+(36356, 0, 0, 0, 0, 0, 0, 436, NULL, NULL);
+-- Known vehicles from zergtmn
+#UPDATE `creature_template` SET `VehicleEntry` = 0;
+--
+UPDATE `creature_template` SET `VehicleEntry` = 23 WHERE `entry` = 23693;
+UPDATE `creature_template` SET `VehicleEntry` = 108 WHERE `entry` = 24083;
+UPDATE `creature_template` SET `VehicleEntry` = 8 WHERE `entry` = 24418;
+UPDATE `creature_template` SET `VehicleEntry` = 16 WHERE `entry` = 24705;
+UPDATE `creature_template` SET `VehicleEntry` = 17 WHERE `entry` = 24750;
+UPDATE `creature_template` SET `VehicleEntry` = 26 WHERE `entry` = 25334;
+UPDATE `creature_template` SET `VehicleEntry` = 29 WHERE `entry` = 25596;
+UPDATE `creature_template` SET `VehicleEntry` = 72 WHERE `entry` = 25743;
+UPDATE `creature_template` SET `VehicleEntry` = 27 WHERE `entry` = 25762;
+UPDATE `creature_template` SET `VehicleEntry` = 30 WHERE `entry` = 25968;
+UPDATE `creature_template` SET `VehicleEntry` = 62 WHERE `entry` = 26472;
+UPDATE `creature_template` SET `VehicleEntry` = 36 WHERE `entry` = 26523;
+UPDATE `creature_template` SET `VehicleEntry` = 33 WHERE `entry` = 26525;
+UPDATE `creature_template` SET `VehicleEntry` = 34 WHERE `entry` = 26572;
+UPDATE `creature_template` SET `VehicleEntry` = 53 WHERE `entry` = 26590;
+UPDATE `creature_template` SET `VehicleEntry` = 37 WHERE `entry` = 26777;
+UPDATE `creature_template` SET `VehicleEntry` = 38 WHERE `entry` = 26778;
+UPDATE `creature_template` SET `VehicleEntry` = 40 WHERE `entry` = 26893;
+UPDATE `creature_template` SET `VehicleEntry` = 53 WHERE `entry` = 27131;
+UPDATE `creature_template` SET `VehicleEntry` = 43 WHERE `entry` = 27213;
+UPDATE `creature_template` SET `VehicleEntry` = 48 WHERE `entry` = 27241;
+UPDATE `creature_template` SET `VehicleEntry` = 44 WHERE `entry` = 27258;
+UPDATE `creature_template` SET `VehicleEntry` = 50 WHERE `entry` = 27261;
+UPDATE `creature_template` SET `VehicleEntry` = 46 WHERE `entry` = 27270;
+UPDATE `creature_template` SET `VehicleEntry` = 50 WHERE `entry` = 27292;
+UPDATE `creature_template` SET `VehicleEntry` = 49 WHERE `entry` = 27354;
+UPDATE `creature_template` SET `VehicleEntry` = 55 WHERE `entry` = 27496;
+UPDATE `creature_template` SET `VehicleEntry` = 56 WHERE `entry` = 27587;
+UPDATE `creature_template` SET `VehicleEntry` = 57 WHERE `entry` = 27593;
+UPDATE `creature_template` SET `VehicleEntry` = 59 WHERE `entry` = 27626;
+UPDATE `creature_template` SET `VehicleEntry` = 60 WHERE `entry` = 27629;
+UPDATE `creature_template` SET `VehicleEntry` = 61 WHERE `entry` = 27661;
+UPDATE `creature_template` SET `VehicleEntry` = 154 WHERE `entry` = 27671;
+UPDATE `creature_template` SET `VehicleEntry` = 68 WHERE `entry` = 27714;
+UPDATE `creature_template` SET `VehicleEntry` = 70 WHERE `entry` = 27755;
+UPDATE `creature_template` SET `VehicleEntry` = 256 WHERE `entry` = 27761;
+UPDATE `creature_template` SET `VehicleEntry` = 68 WHERE `entry` = 27839;
+UPDATE `creature_template` SET `VehicleEntry` = 79 WHERE `entry` = 27881;
+UPDATE `creature_template` SET `VehicleEntry` = 160 WHERE `entry` = 27894;
+UPDATE `creature_template` SET `VehicleEntry` = 89 WHERE `entry` = 27924;
+UPDATE `creature_template` SET `VehicleEntry` = 97 WHERE `entry` = 27992;
+UPDATE `creature_template` SET `VehicleEntry` = 97 WHERE `entry` = 27993;
+UPDATE `creature_template` SET `VehicleEntry` = 99 WHERE `entry` = 27996;
+UPDATE `creature_template` SET `VehicleEntry` = 105 WHERE `entry` = 28009;
+UPDATE `creature_template` SET `VehicleEntry` = 100 WHERE `entry` = 28018;
+UPDATE `creature_template` SET `VehicleEntry` = 102 WHERE `entry` = 28054;
+UPDATE `creature_template` SET `VehicleEntry` = 106 WHERE `entry` = 28094;
+UPDATE `creature_template` SET `VehicleEntry` = 110 WHERE `entry` = 28192;
+UPDATE `creature_template` SET `VehicleEntry` = 117 WHERE `entry` = 28312;
+UPDATE `creature_template` SET `VehicleEntry` = 116 WHERE `entry` = 28319;
+UPDATE `creature_template` SET `VehicleEntry` = 244 WHERE `entry` = 28366;
+UPDATE `creature_template` SET `VehicleEntry` = 200 WHERE `entry` = 28605;
+UPDATE `creature_template` SET `VehicleEntry` = 123 WHERE `entry` = 28606;
+UPDATE `creature_template` SET `VehicleEntry` = 200 WHERE `entry` = 28607;
+UPDATE `creature_template` SET `VehicleEntry` = 124 WHERE `entry` = 28614;
+UPDATE `creature_template` SET `VehicleEntry` = 156 WHERE `entry` = 28670;
+UPDATE `creature_template` SET `VehicleEntry` = 158 WHERE `entry` = 28781;
+UPDATE `creature_template` SET `VehicleEntry` = 145 WHERE `entry` = 28851;
+UPDATE `creature_template` SET `VehicleEntry` = 68 WHERE `entry` = 28887;
+UPDATE `creature_template` SET `VehicleEntry` = 153 WHERE `entry` = 29043;
+UPDATE `creature_template` SET `VehicleEntry` = 25 WHERE `entry` = 29144;
+UPDATE `creature_template` SET `VehicleEntry` = 166 WHERE `entry` = 29414;
+UPDATE `creature_template` SET `VehicleEntry` = 168 WHERE `entry` = 29433;
+UPDATE `creature_template` SET `VehicleEntry` = 190 WHERE `entry` = 29679;
+UPDATE `creature_template` SET `VehicleEntry` = 192 WHERE `entry` = 29691;
+UPDATE `creature_template` SET `VehicleEntry` = 193 WHERE `entry` = 29698;
+UPDATE `creature_template` SET `VehicleEntry` = 207 WHERE `entry` = 29753;
+UPDATE `creature_template` SET `VehicleEntry` = 202 WHERE `entry` = 29857;
+UPDATE `creature_template` SET `VehicleEntry` = 208 WHERE `entry` = 29918;
+UPDATE `creature_template` SET `VehicleEntry` = 318 WHERE `entry` = 29929;
+UPDATE `creature_template` SET `VehicleEntry` = 196 WHERE `entry` = 30013;
+UPDATE `creature_template` SET `VehicleEntry` = 213 WHERE `entry` = 30066;
+UPDATE `creature_template` SET `VehicleEntry` = 222 WHERE `entry` = 30174;
+UPDATE `creature_template` SET `VehicleEntry` = 225 WHERE `entry` = 30204;
+UPDATE `creature_template` SET `VehicleEntry` = 234 WHERE `entry` = 30228;
+UPDATE `creature_template` SET `VehicleEntry` = 233 WHERE `entry` = 30275;
+UPDATE `creature_template` SET `VehicleEntry` = 177 WHERE `entry` = 30320;
+UPDATE `creature_template` SET `VehicleEntry` = 228 WHERE `entry` = 30330;
+UPDATE `creature_template` SET `VehicleEntry` = 229 WHERE `entry` = 30337;
+UPDATE `creature_template` SET `VehicleEntry` = 245 WHERE `entry` = 30342;
+UPDATE `creature_template` SET `VehicleEntry` = 230 WHERE `entry` = 30343;
+UPDATE `creature_template` SET `VehicleEntry` = 236 WHERE `entry` = 30403;
+UPDATE `creature_template` SET `VehicleEntry` = 242 WHERE `entry` = 30470;
+UPDATE `creature_template` SET `VehicleEntry` = 247 WHERE `entry` = 30564;
+UPDATE `creature_template` SET `VehicleEntry` = 248 WHERE `entry` = 30585;
+UPDATE `creature_template` SET `VehicleEntry` = 250 WHERE `entry` = 30645;
+UPDATE `creature_template` SET `VehicleEntry` = 262 WHERE `entry` = 31125;
+UPDATE `creature_template` SET `VehicleEntry` = 270 WHERE `entry` = 31137;
+UPDATE `creature_template` SET `VehicleEntry` = 263 WHERE `entry` = 31139;
+UPDATE `creature_template` SET `VehicleEntry` = 265 WHERE `entry` = 31224;
+UPDATE `creature_template` SET `VehicleEntry` = 267 WHERE `entry` = 31262;
+UPDATE `creature_template` SET `VehicleEntry` = 279 WHERE `entry` = 31583;
+UPDATE `creature_template` SET `VehicleEntry` = 280 WHERE `entry` = 31641;
+UPDATE `creature_template` SET `VehicleEntry` = 109 WHERE `entry` = 31689;
+UPDATE `creature_template` SET `VehicleEntry` = 284 WHERE `entry` = 31702;
+UPDATE `creature_template` SET `VehicleEntry` = 174 WHERE `entry` = 31722;
+UPDATE `creature_template` SET `VehicleEntry` = 312 WHERE `entry` = 31857;
+UPDATE `creature_template` SET `VehicleEntry` = 312 WHERE `entry` = 31858;
+UPDATE `creature_template` SET `VehicleEntry` = 315 WHERE `entry` = 31861;
+UPDATE `creature_template` SET `VehicleEntry` = 315 WHERE `entry` = 31862;
+UPDATE `creature_template` SET `VehicleEntry` = 290 WHERE `entry` = 31881;
+UPDATE `creature_template` SET `VehicleEntry` = 291 WHERE `entry` = 31884;
+UPDATE `creature_template` SET `VehicleEntry` = 294 WHERE `entry` = 32189;
+UPDATE `creature_template` SET `VehicleEntry` = 312 WHERE `entry` = 32212;
+UPDATE `creature_template` SET `VehicleEntry` = 312 WHERE `entry` = 32213;
+UPDATE `creature_template` SET `VehicleEntry` = 298 WHERE `entry` = 32225;
+UPDATE `creature_template` SET `VehicleEntry` = 318 WHERE `entry` = 32286;
+UPDATE `creature_template` SET `VehicleEntry` = 113 WHERE `entry` = 32323;
+UPDATE `creature_template` SET `VehicleEntry` = 304 WHERE `entry` = 32490;
+UPDATE `creature_template` SET `VehicleEntry` = 165 WHERE `entry` = 32535;
+UPDATE `creature_template` SET `VehicleEntry` = 324 WHERE `entry` = 32627;
+UPDATE `creature_template` SET `VehicleEntry` = 116 WHERE `entry` = 32629;
+UPDATE `creature_template` SET `VehicleEntry` = 312 WHERE `entry` = 32633;
+UPDATE `creature_template` SET `VehicleEntry` = 313 WHERE `entry` = 32640;
+UPDATE `creature_template` SET `VehicleEntry` = 160 WHERE `entry` = 32795;
+UPDATE `creature_template` SET `VehicleEntry` = 158 WHERE `entry` = 32796;
+UPDATE `creature_template` SET `VehicleEntry` = 328 WHERE `entry` = 32930;
+UPDATE `creature_template` SET `VehicleEntry` = 380 WHERE `entry` = 32934;
+UPDATE `creature_template` SET `VehicleEntry` = 336 WHERE `entry` = 33060;
+UPDATE `creature_template` SET `VehicleEntry` = 335 WHERE `entry` = 33062;
+UPDATE `creature_template` SET `VehicleEntry` = 337 WHERE `entry` = 33067;
+UPDATE `creature_template` SET `VehicleEntry` = 338 WHERE `entry` = 33109;
+UPDATE `creature_template` SET `VehicleEntry` = 387 WHERE `entry` = 33113;
+UPDATE `creature_template` SET `VehicleEntry` = 341 WHERE `entry` = 33114;
+UPDATE `creature_template` SET `VehicleEntry` = 342 WHERE `entry` = 33118;
+UPDATE `creature_template` SET `VehicleEntry` = 345 WHERE `entry` = 33167;
+UPDATE `creature_template` SET `VehicleEntry` = 348 WHERE `entry` = 33214;
+UPDATE `creature_template` SET `VehicleEntry` = 349 WHERE `entry` = 33217;
+UPDATE `creature_template` SET `VehicleEntry` = 353 WHERE `entry` = 33293;
+UPDATE `creature_template` SET `VehicleEntry` = 349 WHERE `entry` = 33319;
+UPDATE `creature_template` SET `VehicleEntry` = 349 WHERE `entry` = 33321;
+UPDATE `creature_template` SET `VehicleEntry` = 368 WHERE `entry` = 33513;
+UPDATE `creature_template` SET `VehicleEntry` = 372 WHERE `entry` = 33669;
+UPDATE `creature_template` SET `VehicleEntry` = 375 WHERE `entry` = 33687;
+UPDATE `creature_template` SET `VehicleEntry` = 108 WHERE `entry` = 33778;
+UPDATE `creature_template` SET `VehicleEntry` = 349 WHERE `entry` = 33844;
+UPDATE `creature_template` SET `VehicleEntry` = 349 WHERE `entry` = 33845;
+UPDATE `creature_template` SET `VehicleEntry` = 390 WHERE `entry` = 34120;
+UPDATE `creature_template` SET `VehicleEntry` = 397 WHERE `entry` = 34161;
+UPDATE `creature_template` SET `VehicleEntry` = 430 WHERE `entry` = 34658;
+UPDATE `creature_template` SET `VehicleEntry` = 477 WHERE `entry` = 34703;
+UPDATE `creature_template` SET `VehicleEntry` = 509 WHERE `entry` = 34775;
+UPDATE `creature_template` SET `VehicleEntry` = 438 WHERE `entry` = 34793;
+UPDATE `creature_template` SET `VehicleEntry` = 442 WHERE `entry` = 34796;
+UPDATE `creature_template` SET `VehicleEntry` = 446 WHERE `entry` = 34826;
+UPDATE `creature_template` SET `VehicleEntry` = 452 WHERE `entry` = 34929;
+UPDATE `creature_template` SET `VehicleEntry` = 453 WHERE `entry` = 34935;
+UPDATE `creature_template` SET `VehicleEntry` = 510 WHERE `entry` = 34944;
+UPDATE `creature_template` SET `VehicleEntry` = 447 WHERE `entry` = 35273;
+UPDATE `creature_template` SET `VehicleEntry` = 107 WHERE `entry` = 35373;
+UPDATE `creature_template` SET `VehicleEntry` = 487 WHERE `entry` = 35474;
+UPDATE `creature_template` SET `VehicleEntry` = 107 WHERE `entry` = 35491;
+UPDATE `creature_template` SET `VehicleEntry` = 477 WHERE `entry` = 35572;
+UPDATE `creature_template` SET `VehicleEntry` = 478 WHERE `entry` = 35633;
+UPDATE `creature_template` SET `VehicleEntry` = 479 WHERE `entry` = 35634;
+UPDATE `creature_template` SET `VehicleEntry` = 481 WHERE `entry` = 35636;
+UPDATE `creature_template` SET `VehicleEntry` = 482 WHERE `entry` = 35637;
+UPDATE `creature_template` SET `VehicleEntry` = 483 WHERE `entry` = 35638;
+UPDATE `creature_template` SET `VehicleEntry` = 484 WHERE `entry` = 35640;
+UPDATE `creature_template` SET `VehicleEntry` = 529 WHERE `entry` = 35644;
+UPDATE `creature_template` SET `VehicleEntry` = 489 WHERE `entry` = 35768;
+UPDATE `creature_template` SET `VehicleEntry` = 655 WHERE `entry` = 35819;
+UPDATE `creature_template` SET `VehicleEntry` = 436 WHERE `entry` = 36356;
+UPDATE `creature_template` SET `VehicleEntry` = 522 WHERE `entry` = 36476;
+UPDATE `creature_template` SET `VehicleEntry` = 529 WHERE `entry` = 36559;
+UPDATE `creature_template` SET `VehicleEntry` = 535 WHERE `entry` = 36661;
+UPDATE `creature_template` SET `VehicleEntry` = 551 WHERE `entry` = 36794;
+UPDATE `creature_template` SET `VehicleEntry` = 554 WHERE `entry` = 36838;
+UPDATE `creature_template` SET `VehicleEntry` = 560 WHERE `entry` = 36891;
+UPDATE `creature_template` SET `VehicleEntry` = 562 WHERE `entry` = 36896;
+UPDATE `creature_template` SET `VehicleEntry` = 622 WHERE `entry` = 37120;
+UPDATE `creature_template` SET `VehicleEntry` = 611 WHERE `entry` = 37968;
+UPDATE `creature_template` SET `VehicleEntry` = 636 WHERE `entry` = 38500;
+
+-- Mechano-hog, Mekgineer's Chopper
+UPDATE `creature_template` SET `VehicleEntry` = 318, IconName = 'vehichleCursor' WHERE `entry` IN (29929, 32286);
+-- Traveler's Tundra Mammoth
+-- Grand Ice Mammoth
+-- Grand Black War Mammoth
+-- Grand Caravan Mammoth
+UPDATE `creature_template` SET `VehicleEntry` = 312, IconName = 'vehichleCursor' WHERE `entry` IN (32633, 32640, 31857, 31858, 31861, 31862, 32212, 32213);
+-- X-53 Touring Rocket
+UPDATE `creature_template` SET `VehicleEntry` = 774, IconName = 'vehichleCursor' WHERE `entry` = 40725;
+
+# Sniffed by zergtmn
+UPDATE `creature_template` SET `VehicleEntry` = 328 WHERE `entry` = 32930;
+UPDATE `creature_template` SET `VehicleEntry` = 380 WHERE `entry` = 32934;
+UPDATE `creature_template` SET `VehicleEntry` = 336 WHERE `entry` = 33060;
+UPDATE `creature_template` SET `VehicleEntry` = 335 WHERE `entry` = 33062;
+UPDATE `creature_template` SET `VehicleEntry` = 337 WHERE `entry` = 33067;
+UPDATE `creature_template` SET `VehicleEntry` = 347 WHERE `entry` = 33108;
+UPDATE `creature_template` SET `VehicleEntry` = 338 WHERE `entry` = 33109;
+UPDATE `creature_template` SET `VehicleEntry` = 387 WHERE `entry` = 33113;
+UPDATE `creature_template` SET `VehicleEntry` = 341 WHERE `entry` = 33114;
+UPDATE `creature_template` SET `VehicleEntry` = 342 WHERE `entry` = 33118;
+UPDATE `creature_template` SET `VehicleEntry` = 345 WHERE `entry` = 33167;
+UPDATE `creature_template` SET `VehicleEntry` = 348 WHERE `entry` = 33214;
+UPDATE `creature_template` SET `VehicleEntry` = 381 WHERE `entry` = 33288;
+UPDATE `creature_template` SET `VehicleEntry` = 353 WHERE `entry` = 33293;
+UPDATE `creature_template` SET `VehicleEntry` = 356 WHERE `entry` = 33364;
+UPDATE `creature_template` SET `VehicleEntry` = 357 WHERE `entry` = 33366;
+UPDATE `creature_template` SET `VehicleEntry` = 358 WHERE `entry` = 33369;
+UPDATE `creature_template` SET `VehicleEntry` = 371 WHERE `entry` = 33651;
+UPDATE `creature_template` SET `VehicleEntry` = 372 WHERE `entry` = 33669;
+UPDATE `creature_template` SET `VehicleEntry` = 108 WHERE `entry` = 33778;
+UPDATE `creature_template` SET `VehicleEntry` = 385 WHERE `entry` = 33983;
+UPDATE `creature_template` SET `VehicleEntry` = 390 WHERE `entry` = 34120;
+UPDATE `creature_template` SET `VehicleEntry` = 392 WHERE `entry` = 34146;
+UPDATE `creature_template` SET `VehicleEntry` = 395 WHERE `entry` = 34150;
+UPDATE `creature_template` SET `VehicleEntry` = 396 WHERE `entry` = 34151;
+UPDATE `creature_template` SET `VehicleEntry` = 397 WHERE `entry` = 34161;
+UPDATE `creature_template` SET `VehicleEntry` = 399 WHERE `entry` = 34183;
+
+UPDATE `creature_template` SET `VehicleEntry` = 143 WHERE `entry` = 28864; -- Scourge Gryphon
+UPDATE `creature_template` SET `VehicleEntry` = 123 WHERE `entry` = 28605; -- Havenshire Stallion
+UPDATE `creature_template` SET `VehicleEntry` = 135 WHERE `entry` = 28782; -- Acherus Deathcharger
+UPDATE `creature_template` SET `VehicleEntry` = 138 WHERE `entry` = 28817; -- Mine Car
+UPDATE `creature_template` SET `VehicleEntry` = 139 WHERE `entry` = 28833; -- Scarlet Cannon
+
+UPDATE `creature_template` SET `VehicleEntry` = 370 WHERE `entry` = 33432; -- Leviathan Mk II
+UPDATE `creature_template` SET `VehicleEntry` = 373 WHERE `entry` = 33670; -- Aerial Command Unit
+
+UPDATE `creature_template` SET `VehicleEntry` = 736 WHERE `entry` = 40305; -- Spirit of the Tiger
+
+#
+UPDATE `creature_template` SET `VehicleEntry` = 220 WHERE `entry` = 30161;
+UPDATE `creature_template` SET `VehicleEntry` = 224 WHERE `entry` = 30234;
+UPDATE `creature_template` SET `VehicleEntry` = 223 WHERE `entry` = 30248;
+
+-- fom Burned
+UPDATE creature_template SET IconName="vehichleCursor" WHERE entry IN
+(29144,32633,24418,25334,25743,26191,26523,26813,27061,27258,27354,27409,27496,27587,27593,27626, 27661,27692,27714,27755,27756,27838,27839,27850,27883,27905,27996,28851,29563,29598,29602,29708,
+29857,29903,30021,30066,30108,30123,30124,30134,30228,30234,30248,30272,30403,30500,31070,31407,
+31408,31409,31717,31736,31770,31840,31856,31858,31884,32152,32158,32227,32286,32370,32640,33782);
+
+UPDATE creature_template SET IconName="Gunner" WHERE entry IN
+(28319,28366,28833,30236,32629,33067,33080,33139,33264,34111);
+
+-- From Timmit
+-- bone spike
+UPDATE `creature_template` SET `VehicleEntry` = 647 WHERE `entry` IN (38711,38970,38971,38972);
+UPDATE `creature_template` SET `VehicleEntry` = 533 WHERE `entry` IN (36619,38233,38459,38460);
+
+-- Putricide
+UPDATE `creature_template` SET `VehicleEntry` = 587 WHERE `entry` IN (36678,38431,38585,38586);
+UPDATE `creature_template` SET `VehicleEntry` = 591 WHERE `entry` IN (37672,38605,38786,38787);
+
+# full fix
+UPDATE `creature_template` SET `IconName` = 'vehichleCursor' WHERE `VehicleEntry` > 0 AND `IconName` IS NULL;
+
+# spellclicks
+-- from zergtmn
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (33109, 33062, 33060);
+INSERT INTO `npc_spellclick_spells` VALUES
+(33109, 62309, 0, 0, 0, 1),  -- Demolisher
+(33062, 65030, 0, 0, 0, 1),  -- Chopper
+(33060, 65031, 0, 0, 0, 1);  -- Siege engine
+
+-- vehicle spells
+
+-- from me (rsa)
+-- chopper
+UPDATE `creature_template` SET `IconName` = 'vehichleCursor', `AIName` = 'NullAI' WHERE `entry` IN (33062);
+UPDATE vehicle_data SET `spell1` = 62974, `spell2` = 62286, `spell3` = 62299, `spell4` = 64660 where entry = 335;
+-- Siege engine
+UPDATE `creature_template` SET `IconName` = 'Gunner', `AIName` = 'NullAI' WHERE `entry` IN (33060);
+UPDATE vehicle_data SET `spell1` = 62345, `spell2` = 62522, `spell3` = 62346 where entry = 336;
+-- demolisher
+UPDATE `creature_template` SET `IconName` = 'vehichleCursor', `AIName` = 'NullAI' WHERE `entry` IN (33109);
+UPDATE vehicle_data SET `spell1` = 62306, `spell2` = 62490, `spell3` = 62308, `spell4` =  62324 where entry = 338;
+
+
+-- various creatures at 0hp
+
+UPDATE creature_template SET maxhealth = 133525, minhealth = 133525, maxmana = 51360, minmana = 51360, InhabitType = 3 WHERE entry = 28670;
+UPDATE creature_template SET minhealth = 26140, maxhealth = 26140, dynamicflags = 0, minmana = 2117, maxmana = 2117, unit_flags = 772, minlevel = 55, maxlevel = 55, unk16 = 10, unk17 = 1, InhabitType = 3, scale = 1, mindmg = 685, maxdmg = 715, armor = 3232, attackpower = 214, unit_class = 2, type = 10 WHERE entry = 28833;
+UPDATE creature_template SET minhealth = 26140, maxhealth = 26140, dynamicflags = 0, minmana = 0, maxmana = 0, unit_flags = 772, minlevel = 55, maxlevel = 55, unk16 = 10, unk17 = 1, InhabitType = 3, scale = 1, mindmg = 685, maxdmg = 715, armor = 3232, attackpower = 214, unit_class = 2, type = 10 WHERE entry = 28887;
+
+-- From zergtmn
+/*
+    Havenshire Stallion
+    Havenshire Mare
+    Havenshire Colt
+*/
+UPDATE vehicle_data SET
+    spell1 = 52264,
+    spell2 = 52268,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (123, 200);
+
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (28605, 28606, 28607);
+INSERT INTO npc_spellclick_spells VALUES
+(28605, 52263, 12680, 1, 12680, 1),
+(28606, 52263, 12680, 1, 12680, 1),
+(28607, 52263, 12680, 1, 12680, 1);
+INSERT IGNORE INTO spell_script_target VALUES (52264, 1, 28653);
+
+-- From jahangames
+-- Massacre at Light's point quest
+UPDATE vehicle_data SET
+spell1 = 52435,
+spell2 = 52576,
+spell3 = 0,
+spell4 = 0,
+spell5 = 52588,
+spell6 = 0
+WHERE entry IN (139);
+
+UPDATE vehicle_data SET
+spell1 = 52435,
+spell2 = 52576,
+spell3 = 0,
+spell4 = 0,
+spell5 = 52588,
+spell6 = 0
+WHERE entry IN (68);
+
+INSERT INTO npc_spellclick_spells VALUES ('28833', '52447', '12701', '1', '12701', '1');
+INSERT INTO npc_spellclick_spells VALUES ('28887', '52447', '12701', '1', '12701', '1');INSERT IGNORE INTO spell_script_target VALUES (52576, 1, 28834);
+INSERT IGNORE INTO spell_script_target VALUES (52576, 1, 28886);
+INSERT IGNORE INTO spell_script_target VALUES (52576, 1, 28850);
+
+-- From Lanc
+-- quest 12953
+UPDATE vehicle_data SET
+    spell1 = 55812,
+    spell2 = 0,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (213);
+
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (30066);
+INSERT INTO `npc_spellclick_spells` VALUES
+(30066, 44002, 12953, 1, 12953, 1);
+INSERT IGNORE INTO `spell_script_target` VALUES (55812, 1, 30096);
+
+-- From lanc
+/* 7th Legion Chain Gun */
+UPDATE vehicle_data SET
+    spell1 = 49190,
+    spell2 = 49550,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (68);
+UPDATE `creature_template` SET IconName = 'Gunner' WHERE entry IN (27714);
+
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27714);
+INSERT INTO npc_spellclick_spells VALUES
+(27714, 67373, 0, 0, 0, 1);
+
+/* Broken-down Shredder */
+UPDATE vehicle_data SET
+    spell1 = 48558,
+    spell2 = 48604,
+    spell3 = 48548,
+    spell4 = 0,
+    spell5 = 48610,
+    spell6 = 0
+WHERE entry IN (49);
+UPDATE `creature_template` SET IconName = 'vehichleCursor' WHERE entry IN (27354);
+
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (27354);
+INSERT INTO npc_spellclick_spells VALUES
+(27354, 67373, 0, 0, 0, 1);
+INSERT IGNORE INTO spell_script_target VALUES (48610, 1, 27396);
+
+/* Forsaken Blight Spreader */
+UPDATE vehicle_data SET
+    spell1 = 48211,
+    spell2 = 0,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (36);
+UPDATE `creature_template` SET IconName = 'vehichleCursor' WHERE entry IN (26523);
+
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (26523);
+INSERT INTO npc_spellclick_spells VALUES
+(26523, 47961, 0, 0, 0, 1);
+
+/* Argent Tournament mount */
+UPDATE vehicle_data SET
+    spell1 = 62544,
+    spell2 = 62575,
+    spell3 = 63010,
+    spell4 = 62552,
+    spell5 = 64077,
+    spell6 = 62863
+WHERE entry IN (349);
+UPDATE creature_template SET KillCredit1 = 33340 WHERE entry IN (33272);
+UPDATE creature_template SET KillCredit1 = 33339 WHERE entry IN (33243);
+
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (33842, 33843);
+INSERT INTO npc_spellclick_spells VALUES
+(33842, 63791, 13829, 1, 0, 3),
+(33842, 63791, 13839, 1, 0, 3),
+(33842, 63791, 13838, 1, 0, 3),
+(33843, 63792, 13828, 1, 0, 3),
+(33843, 63792, 13837, 1, 0, 3),
+(33843, 63792, 13835, 1, 0, 3);
+
+DELETE FROM creature WHERE id IN (33844,33845);
+UPDATE creature_template SET speed_run = '1.5', unit_flags = 8 WHERE entry IN (33844,33845);
+
+-- Quest vehicles Support: Going Bearback (12851)
+UPDATE vehicle_data SET
+    spell1 = 54897,
+    spell2 = 54907,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (308);
+UPDATE `creature_template` SET `VehicleEntry` = 308 WHERE `entry` = 29598;
+
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (29598);
+INSERT INTO `npc_spellclick_spells` VALUES
+(29598, 54908, 12851, 1, 12851, 1);
+
+INSERT IGNORE INTO `spell_script_target` VALUES (54897, 1, 29358);
+
+/* Scourge Gryphon */
+UPDATE vehicle_data SET
+    spell1 = 0,
+    spell2 = 0,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (143);
+
+/* Frostbrood Vanquisher */
+UPDATE vehicle_data SET
+    spell1 = 53114,
+    spell2 = 53110,
+    spell3 = 0,
+    spell4 = 0,
+    spell5 = 0,
+    spell6 = 0
+WHERE entry IN (156);
+
+-- from me
+-- into realm of shadows
+UPDATE vehicle_data SET
+    spell1 = 52362
+WHERE `entry` = 135;
+UPDATE `creature_template` SET `IconName` = 'vehichleCursor', `unit_flags` = 0 WHERE `entry` =28782;
+
+UPDATE `quest_template` SET 
+`SrcSpell` = 52359,
+`SpecialFlags` = 2,
+`ReqCreatureOrGOId1` = 28768,
+`ReqCreatureOrGOCount1` = 1,
+`ReqSpellCast1` = 0,
+`RewItemId1` = 39208,
+`RewItemCount1` = 1 WHERE `entry` = 12687;
+
+DELETE FROM `creature_involvedrelation` WHERE `quest` in (12687);
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (28788, 12687);
+UPDATE `creature_template` SET `npcflag` = 2 WHERE `entry` = 28788;
+
+DELETE FROM `spell_script_target` WHERE `entry` = 52349;
+
+UPDATE `creature_ai_scripts` SET 
+`action1_type`   = '11',
+`action1_param1` = '52361',
+`action1_param2` = '6',
+`action1_param3` = '16',
+`action2_type`   = '11',
+`action2_param1` = '52357',
+`action2_param2` = '6',
+`action2_param3` = '16',
+`action3_type`   = '0'
+WHERE `id` = 2876806;
+
+DELETE FROM `creature` WHERE `id` = 28782;
+
+DELETE FROM `creature_template_addon` WHERE `entry` = 28782;
+
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (28782);
+INSERT INTO `npc_spellclick_spells` VALUES
+(28782, 46598, 0, 0, 0, 1);

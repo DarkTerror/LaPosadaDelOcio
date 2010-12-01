@@ -57,6 +57,7 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
+#include "Vehicle.h"
 
 pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
 {
@@ -4305,7 +4306,7 @@ void Spell::EffectSummonType(SpellEffectIndex eff_idx)
                 case UNITNAME_SUMMON_TITLE_VEHICLE:
                 case UNITNAME_SUMMON_TITLE_MOUNT:
                     // TODO
-                    // EffectSummonVehicle(i);
+                    EffectSummonVehicle(eff_idx);
                     break;
                 default:
                     sLog.outError("EffectSummonType: Unhandled summon title %u", summon_prop->Title);
@@ -4333,9 +4334,7 @@ void Spell::EffectSummonType(SpellEffectIndex eff_idx)
         }
         case SUMMON_PROP_GROUP_VEHICLE:
         {
-            // TODO
-            // EffectSummonVehicle(i);
-            sLog.outDebug("EffectSummonType: Unhandled summon group type SUMMON_PROP_GROUP_VEHICLE(%u)", summon_prop->Group);
+            EffectSummonVehicle(eff_idx);
             break;
         }
         default:
@@ -7292,13 +7291,15 @@ void Spell::EffectAddComboPoints(SpellEffectIndex /*eff_idx*/)
     if(!unitTarget)
         return;
 
-    if(m_caster->GetTypeId() != TYPEID_PLAYER)
-        return;
-
     if(damage <= 0)
         return;
 
-    ((Player*)m_caster)->AddComboPoints(unitTarget, damage);
+    if(m_caster->GetTypeId() != TYPEID_PLAYER)
+    {
+        if(((Creature*)m_caster)->IsVehicle())
+            ((Player*)m_caster->GetCharmer())->AddComboPoints(unitTarget, damage);
+    }else
+        ((Player*)m_caster)->AddComboPoints(unitTarget, damage);
 }
 
 void Spell::EffectDuel(SpellEffectIndex eff_idx)
@@ -8620,6 +8621,54 @@ void Spell::EffectRenamePet(SpellEffectIndex /*eff_idx*/)
         return;
 
     unitTarget->RemoveByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED);
+}
+
+void Spell::EffectSummonVehicle(SpellEffectIndex eff_idx)
+{
+    uint32 creature_entry = m_spellInfo->EffectMiscValue[eff_idx];
+    if(!creature_entry)
+        return;
+
+    float px, py, pz;
+    // If dest location if present
+    if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+    {
+        // Summon unit in dest location
+        px = m_targets.m_destX;
+        py = m_targets.m_destY;
+        pz = m_targets.m_destZ;
+    }
+    // Summon if dest location not present near caster
+    else
+        m_caster->GetClosePoint(px, py, pz, 1.0f);
+
+    Vehicle *v = m_caster->SummonVehicle(creature_entry, px, py, pz, m_caster->GetOrientation());
+    if(!v)
+        return;
+
+    v->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
+    v->SetCreatorGuid(m_caster->GetGUID());
+
+    if(damage)
+    {
+        m_caster->CastSpell(v, damage, true);
+        m_caster->EnterVehicle(v, 0);
+    }
+    int32 duration = GetSpellMaxDuration(m_spellInfo);
+    if(duration > 0)
+        v->SetSpawnDuration(duration);
+}
+
+void Spell::EffectDamageBuilding(SpellEffectIndex eff_idx)
+{
+    if(!gameObjTarget)
+        return;
+
+    if(gameObjTarget->GetGoType() != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+        return;
+
+    // NOTE : this can be increased by scaling stat system in vehicles
+    gameObjTarget->DealSiegeDamage(damage);
 }
 
 void Spell::EffectPlayMusic(SpellEffectIndex eff_idx)
