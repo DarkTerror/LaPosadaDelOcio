@@ -876,6 +876,10 @@ void World::LoadConfigSettings(bool reload)
     sLog.outString( "WORLD: VMap support included. LineOfSight:%i, getHeight:%i, indoorCheck:%i",
         enableLOS, enableHeight, getConfig(CONFIG_BOOL_VMAP_INDOOR_CHECK) ? 1 : 0);
     sLog.outString( "WORLD: VMap data directory is: %svmaps",m_dataPath.c_str());
+
+    // External Mail
+    setConfig(CONFIG_BOOL_EXTERNAL_MAIL_ENABLED     , "ExternalMail.Enabled"    , false);
+    setConfig(CONFIG_UINT32_EXTERNAL_MAIL_INTERVAL  , "ExternalMail.Interval"   , 1);
 }
 
 /// Initialize the World
