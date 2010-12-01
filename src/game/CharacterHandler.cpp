@@ -1113,6 +1113,195 @@ void WorldSession::HandleRemoveGlyphOpcode( WorldPacket & recv_data )
     }
 }
 
+void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
+{
+	uint64 guid;
+	std::string newname;
+	uint8 gender, skin, face, hairStyle, hairColor, facialHair, race;
+	recv_data >> guid;
+	recv_data >> newname;
+	recv_data >> gender >> skin >> hairColor >> hairStyle >> facialHair >> face >> race;
+
+	QueryResult *result = CharacterDatabase.PQuery("SELECT at_login FROM characters WHERE guid ='%u'", GUID_LOPART(guid));
+    if (!result)
+    {
+        WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+        data << uint8(CHAR_CREATE_ERROR);
+        SendPacket( &data );
+        return;
+    }
+
+	Field *fields = result->Fetch();
+    uint32 at_loginFlags = fields[0].GetUInt32();
+	uint32 used_loginFlag = recv_data.GetOpcode() == CMSG_CHAR_RACE_CHANGE ? AT_LOGIN_CHANGE_RACE : AT_LOGIN_CHANGE_FACTION;
+    delete result;
+
+	if (!(at_loginFlags & used_loginFlag))
+    {
+        WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+        data << uint8(CHAR_CREATE_ERROR);
+        SendPacket( &data );
+        return;
+    }
+
+	// prevent character rename to invalid name
+    if (!normalizePlayerName(newname))
+    {
+        WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+        data << uint8(CHAR_NAME_NO_NAME);
+        SendPacket( &data );
+        return;
+    }
+
+    uint8 res = ObjectMgr::CheckPlayerName(newname,true);
+    if (res != CHAR_NAME_SUCCESS)
+    {
+        WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+        data << uint8(res);
+        SendPacket( &data );
+        return;
+    }
+
+    // check name limitations
+    if (GetSecurity() == SEC_PLAYER && sObjectMgr.IsReservedName(newname))
+    {
+        WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+        data << uint8(CHAR_NAME_RESERVED);
+        SendPacket( &data );
+        return;
+    }
+
+    // character with this name already exist
+    if (uint64 newguid = sObjectMgr.GetPlayerGUIDByName(newname))
+    {
+        if (newguid != guid)
+        {
+            WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
+            data << uint8(CHAR_CREATE_NAME_IN_USE);
+            SendPacket( &data );
+            return;
+        }
+    }
+
+	CharacterDatabase.escape_string(newname);
+    Player::Customize(guid, gender, skin, face, hairStyle, hairColor, facialHair);
+	CharacterDatabase.BeginTransaction();
+    CharacterDatabase.PExecute("UPDATE characters SET name = '%s', race = '%u', at_login = at_login & ~ %u WHERE guid ='%u'", newname.c_str(), race, uint32(used_loginFlag), GUID_LOPART(guid));
+    CharacterDatabase.PExecute("DELETE FROM character_declinedname WHERE guid ='%u'", GUID_LOPART(guid));
+
+	if(recv_data.GetOpcode() == CMSG_CHAR_FACTION_CHANGE)
+	{
+		// Delete all Flypaths
+		CharacterDatabase.PExecute("UPDATE characters SET taxi_path = '' WHERE guid ='%u'",GUID_LOPART(guid));
+		// Delete all current quests
+		CharacterDatabase.PExecute("DELETE FROM `character_queststatus` WHERE `status` = 3 AND guid ='%u'",GUID_LOPART(guid));
+		// Reset guild
+		CharacterDatabase.PExecute("DELETE FROM `guild_member` WHERE `guid`= '%u'",GUID_LOPART(guid));
+		// Delete Friend List
+		CharacterDatabase.PExecute("DELETE FROM `character_social` WHERE `guid`= '%u'",GUID_LOPART(guid));
+		// Leave Arena Teams
+		Player::LeaveAllArenaTeams(guid);
+
+		// Search each faction is targeted
+		BattleGroundTeamIndex team = BG_TEAM_ALLIANCE;
+		switch(race)
+		{
+			case RACE_ORC:
+			case RACE_TAUREN:
+			case RACE_UNDEAD_PLAYER:
+			case RACE_TROLL:
+			case RACE_BLOODELF:
+			//case RACE_GOBLIN: for cataclysm
+				team = BG_TEAM_HORDE;
+				break;
+			default: break;
+		}
+
+		// Reset homebind
+		if(team == BG_TEAM_ALLIANCE)
+			CharacterDatabase.PExecute("UPDATE `character_homebind` SET `map` = '0', `zone` = '1519', `position_x` = '-8867.68', `position_y` = '673.373', `position_z` = '97.9034' WHERE `guid`='%u'",GUID_LOPART(guid));
+		else
+		    CharacterDatabase.PExecute("UPDATE `character_homebind` SET `map` = '1', `zone` = '1637', `position_x` = '1633.33', `position_y` = '-4439.11', `position_z` = '15.7588' WHERE `guid`='%u'",GUID_LOPART(guid));
+
+		// Achievement conversion
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_achievements"))
+		{
+			do
+			{
+				Field *fields2 = result2->Fetch();
+				uint32 achiev_alliance = fields2[0].GetUInt32();
+				uint32 achiev_horde = fields2[1].GetUInt32();
+				CharacterDatabase.PExecute("UPDATE `character_achievement` SET achievement = '%u' WHERE achievement = '%u' AND guid = '%u'",
+					team == BG_TEAM_ALLIANCE ? achiev_alliance : achiev_horde, team == BG_TEAM_ALLIANCE ? achiev_horde : achiev_alliance, GUID_LOPART(guid));
+			}
+			while( result2->NextRow() );
+		}
+
+		// Item conversion
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_items"))
+		{
+			do
+			{
+				Field *fields2 = result2->Fetch();
+				uint32 item_alliance = fields2[0].GetUInt32();
+				uint32 item_horde = fields2[1].GetUInt32();
+				CharacterDatabase.PExecute("UPDATE `character_inventory` SET item = '%u' WHERE item = '%u' AND guid = '%u'",
+					team == BG_TEAM_ALLIANCE ? item_alliance : item_horde, team == BG_TEAM_ALLIANCE ? item_horde : item_alliance, guid);
+
+				CharacterDatabase.PExecute("UPDATE `item_instance` SET `data`=CONCAT(CAST(SUBSTRING_INDEX(`data`, ' ', 3) AS CHAR), ' ', '%u', ' ',	CAST(SUBSTRING_INDEX(`data`, ' ', (3-64))AS CHAR)) WHERE CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`data`, ' ', 4), ' ', '-1') AS UNSIGNED) = '%u' AND owner_guid = '%u'",
+						team == BG_TEAM_ALLIANCE ? item_alliance : item_horde, team == BG_TEAM_ALLIANCE ? item_horde : item_alliance, GUID_LOPART(guid));
+			}
+			while( result2->NextRow() );
+		}
+
+		// Spell conversion
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_spells"))
+		{
+			do
+			{
+				Field *fields2 = result2->Fetch();
+				uint32 spell_alliance = fields2[0].GetUInt32();
+				uint32 spell_horde = fields2[1].GetUInt32();
+				CharacterDatabase.PExecute("UPDATE `character_spell` SET spell = '%u' WHERE spell = '%u' AND guid = '%u'",
+					team == BG_TEAM_ALLIANCE ? spell_alliance : spell_horde, team == BG_TEAM_ALLIANCE ? spell_horde : spell_alliance, GUID_LOPART(guid));
+			}
+			while( result2->NextRow() );
+		}
+
+		// Reputation conversion
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_reputations"))
+		{
+			do
+			{
+				Field *fields2 = result2->Fetch();
+				uint32 reputation_alliance = fields2[0].GetUInt32();
+				uint32 reputation_horde = fields2[1].GetUInt32();
+				CharacterDatabase.PExecute("DELETE FROM character_reputation WHERE faction = '%u' AND guid = '%u'",team == BG_TEAM_ALLIANCE ? reputation_horde : reputation_alliance, GUID_LOPART(guid));
+				CharacterDatabase.PExecute("UPDATE `character_reputation` SET faction = '%u' WHERE faction = '%u' AND guid = '%u'",
+					team == BG_TEAM_ALLIANCE ? reputation_alliance : reputation_horde, team == BG_TEAM_ALLIANCE ? reputation_horde : reputation_alliance, GUID_LOPART(guid));
+			}
+			while( result2->NextRow() );
+		}
+	}
+	CharacterDatabase.CommitTransaction();
+
+    std::string IP_str = GetRemoteAddress();
+    sLog.outChar("Account: %d (IP: %s), Character guid: %u Change Race/Faction to: %s", GetAccountId(), IP_str.c_str(), GUID_LOPART(guid), newname.c_str());
+
+	WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1+8+(newname.size()+1)+7);
+    data << uint8(RESPONSE_SUCCESS);
+    data << uint64(guid);
+    data << newname;
+    data << uint8(gender);
+    data << uint8(skin);
+    data << uint8(face);
+    data << uint8(hairStyle);
+    data << uint8(hairColor);
+    data << uint8(facialHair);
+	data << uint8(race);
+    SendPacket(&data);
+}
+
 void WorldSession::HandleCharCustomizeOpcode(WorldPacket& recv_data)
 {
     ObjectGuid guid;
