@@ -21503,7 +21503,7 @@ uint32 Player::CalculateTalentsPoints() const
     uint32 talentPointsForLevel = getLevel() < 56 ? 0 : getLevel() - 55;
     talentPointsForLevel += m_questRewardTalentCount;
 
-    if(talentPointsForLevel > base_talent)
+    if(talentPointsForLevel > base_talent || getLevel() >= 60)
         talentPointsForLevel = base_talent;
 
     return uint32(talentPointsForLevel * sWorld.getConfig(CONFIG_FLOAT_RATE_TALENT));
