@@ -267,6 +267,8 @@ BattleGround::BattleGround()
     m_PrematureCountDown = false;
     m_PrematureCountDown = 0;
 
+    m_ArenaEnded = false;
+
     m_StartDelayTimes[BG_STARTING_EVENT_FIRST]  = BG_START_DELAY_2M;
     m_StartDelayTimes[BG_STARTING_EVENT_SECOND] = BG_START_DELAY_1M;
     m_StartDelayTimes[BG_STARTING_EVENT_THIRD]  = BG_START_DELAY_30S;
@@ -502,6 +504,24 @@ void BattleGround::Update(uint32 diff)
                 RemovePlayerAtLeave(itr->first, true, true);// remove player from BG
                 // do not change any battleground's private variables
             }
+        }
+    }
+
+    // Arena time limit
+    if(isArena() && !m_ArenaEnded)
+    {
+        if(m_StartTime > uint32(ARENA_TIME_LIMIT))
+        {
+            Team winner;
+            // winner is team with higher damage
+            if(GetDamageDoneForTeam(ALLIANCE) > GetDamageDoneForTeam(HORDE))
+                winner = ALLIANCE;
+            else if (GetDamageDoneForTeam(HORDE) > GetDamageDoneForTeam(ALLIANCE))
+                winner = HORDE;
+            else
+                winner = TEAM_NONE;
+            EndBattleGround(winner);
+            m_ArenaEnded = true;
         }
     }
 
@@ -1437,6 +1457,45 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             sLog.outError("BattleGround: Unknown player score type %u", type);
             break;
     }
+}
+
+uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
+{
+    BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
+
+    if(itr == m_PlayerScores.end())                         // player not found...
+        return 0;
+
+    switch(type)
+    {
+        case SCORE_KILLING_BLOWS:                           // Killing blows
+            return itr->second->KillingBlows;
+        case SCORE_DEATHS:                                  // Deaths
+            return itr->second->Deaths;
+        case SCORE_DAMAGE_DONE:                             // Damage Done
+            return itr->second->DamageDone;
+        case SCORE_HEALING_DONE:                            // Healing Done
+            return itr->second->HealingDone;
+        default:
+            sLog.outError("BattleGround: Unknown player score type %u", type);
+            return 0;
+    }
+}
+
+uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
+{
+    uint32 finaldamage = 0;
+    for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        uint32 team = itr->second.PlayerTeam;
+        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        if (!plr)
+            continue;
+        if(!team) team = plr->GetTeam();
+        if(team == TeamID)
+            finaldamage += GetPlayerScore(plr, SCORE_DAMAGE_DONE);
+    }
+    return finaldamage;
 }
 
 bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 /*respawnTime*/)
