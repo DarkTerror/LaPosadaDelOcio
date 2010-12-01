@@ -773,6 +773,42 @@ void BattleGround::EndBattleGround(Team winner)
             int32 winner_change = winner_arena_team->WonAgainst(loser_rating);
             int32 loser_change = loser_arena_team->LostAgainst(winner_rating);
             DEBUG_LOG("--- Winner rating: %u, Loser rating: %u, Winner change: %i, Loser change: %i ---", winner_rating, loser_rating, winner_change, loser_change);
+            LogDatabase.PExecute("INSERT INTO `arena_logs_reducido` (`team1`,`team1_rating`,`team2`,`team2_rating`,`winner`,`winner_uprate`,`losser_downrate`,`timestamp`) VALUES ('%u','%u','%u','%u','%u','%i','%i',NULL)",winner_arena_team->GetId(),winner_rating,loser_arena_team->GetId(),loser_rating,winner_arena_team->GetId(),winner_change,loser_change);
+
+            std::string winner_id[10] = {"","","","","","","","","",""};
+            std::string loser_id[10] = {"","","","","","","","","",""};
+            int iter = 0;
+            double team1_damage = GetDamageDoneForTeam(GetArenaTeamIdForTeam(winner));
+            double team2_damage = GetDamageDoneForTeam(GetArenaTeamIdForTeam(GetOtherTeam(winner)));
+
+            for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+            {
+                Player *plr = sObjectMgr.GetPlayer(itr->first);
+                if (plr == NULL)
+                    continue;
+
+                char _buf[32];
+                sprintf(_buf, "%d", plr->GetGUIDLow());
+
+                if (itr->second.PlayerTeam == winner)
+                    winner_id[iter] += _buf;
+                else
+                    loser_id[iter] += _buf;
+				iter++;
+            }
+
+            LogDatabase.PExecute("INSERT INTO `arena_logs` (`team1`,`team1_member1`,`team1_member2`,`team1_member3`,`team1_member4`,`team1_member5`,`team1_member6`,`team1_member7`,`team1_member8`,`team1_member9`,`team1_member10`,`team1_rating_change`,`team2`,`team2_member1`,`team2_member2`,`team2_member3`,`team2_member4`,`team2_member5`,`team2_member6`,`team2_member7`,`team2_member8`,`team2_member9`,`team2_member10`,`team2_rating_change`,`winner`,`team1_damage`,`team2_damage`,`timestamp`) VALUES ('%u','%u','%u','%u','%u','%u','%u','%u','%u','%u','%u','%i','%u','%u','%u','%u','%u','%u','%u','%u','%u','%u','%u','%i','%u','%i','%i',NULL)",
+                                        winner_arena_team->GetId(),
+                                        winner_id[0].c_str(),winner_id[1].c_str(),winner_id[2].c_str(),winner_id[3].c_str(),winner_id[4].c_str(),
+                                        winner_id[5].c_str(),winner_id[6].c_str(),winner_id[7].c_str(),winner_id[8].c_str(),winner_id[9].c_str(),
+                                        winner_change,
+                                        loser_arena_team->GetId(),
+                                        loser_id[0].c_str(),loser_id[1].c_str(),loser_id[2].c_str(),loser_id[3].c_str(),loser_id[4].c_str(),
+                                        loser_id[5].c_str(),loser_id[6].c_str(),loser_id[7].c_str(),loser_id[8].c_str(),loser_id[9].c_str(),
+                                        loser_change,
+                                        team1_damage,team2_damage,
+                                        winner_arena_team->GetId());
+
             SetArenaTeamRatingChangeForTeam(winner, winner_change);
             SetArenaTeamRatingChangeForTeam(GetOtherTeam(winner), loser_change);
         }
