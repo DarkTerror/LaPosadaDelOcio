@@ -541,6 +541,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "vehicle_data",                SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadVehicleDataCommand,             "", NULL },
         { "vehicle_seat_data",           SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadVehicleSeatDataCommand,         "", NULL },
         { "spell_disabled",              SEC_GAMEMASTER,    true,  &ChatHandler::HandleReloadSpellDisabledCommand,           "", NULL },
+        { "anticheat",                   SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadAntiCheatCommand,               "", NULL },
         { NULL,                          0,                 false, NULL,                                                     "", NULL }
     };
 

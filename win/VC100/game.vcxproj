@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug_NoPCH|Win32">
@@ -357,6 +357,7 @@
     <ClCompile Include="..\..\src\game\AccountMgr.cpp" />
     <ClCompile Include="..\..\src\game\AchievementMgr.cpp" />
     <ClCompile Include="..\..\src\game\AggressorAI.cpp" />
+    <ClCompile Include="..\..\src\game\AntiCheat.cpp" />
     <ClCompile Include="..\..\src\game\ArenaTeam.cpp" />
     <ClCompile Include="..\..\src\game\ArenaTeamHandler.cpp" />
     <ClCompile Include="..\..\src\game\AuctionHouseHandler.cpp" />
@@ -518,6 +519,7 @@
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
     <ClInclude Include="..\..\src\game\AchievementMgr.h" />
     <ClInclude Include="..\..\src\game\AggressorAI.h" />
+    <ClInclude Include="..\..\src\game\AntiCheat.h" />
     <ClInclude Include="..\..\src\game\ArenaTeam.h" />
     <ClInclude Include="..\..\src\game\AuctionHouseMgr.h" />
     <ClInclude Include="..\..\src\game\Bag.h" />

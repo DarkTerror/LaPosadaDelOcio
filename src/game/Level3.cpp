@@ -952,6 +952,17 @@ bool ChatHandler::HandleReloadVehicleSeatDataCommand(char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleReloadAntiCheatCommand(char* /*arg*/)
+{
+    sLog.outString( "Re-Loading anticheat config table...");
+
+    sObjectMgr.LoadAntiCheatConfig();
+
+    SendGlobalSysMessage("Anticheat config reloaded.");
+
+    return true;
+}
+
 bool ChatHandler::HandleLoadScriptsCommand(char* args)
 {
     if (!LoadScriptingModule(args))

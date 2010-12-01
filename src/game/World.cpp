@@ -517,6 +517,12 @@ void World::LoadConfigSettings(bool reload)
     setConfigPos(CONFIG_FLOAT_CREATURE_FAMILY_FLEE_ASSISTANCE_RADIUS, "CreatureFamilyFleeAssistanceRadius", 30.0f);
 
     ///- Read other configuration items from the config file
+
+    // movement anticheat
+    setConfig(CONFIG_BOOL_ANTICHEAT_ENABLE,              "Anticheat.Enable", false);
+    setConfigPos(CONFIG_UINT32_ANTICHEAT_ACTION_DELAY,   "Anticheat.DelayAfterAction",30);
+    setConfigPos(CONFIG_UINT32_ANTICHEAT_GMLEVEL,        "Anticheat.GmLevel",0);
+
     setConfigMinMax(CONFIG_UINT32_COMPRESSION, "Compression", 1, 1, 9);
     setConfig(CONFIG_BOOL_ADDON_CHANNEL, "AddonChannel", true);
     setConfig(CONFIG_BOOL_CLEAN_CHARACTER_DB, "CleanCharacterDB", true);
@@ -1240,6 +1246,9 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();
 
+    sLog.outString( "Loading AntiCheat config..." );
+    sObjectMgr.LoadAntiCheatConfig();
+
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );
     sObjectMgr.ReturnOrDeleteOldMails(false);
@@ -1556,7 +1565,7 @@ void World::Update(uint32 diff)
 }
 
 /// Send a packet to all players (except self if mentioned)
-void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self, uint32 team)
+void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self, uint32 team, AccountTypes security)
 {
     SessionMap::const_iterator itr;
     for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
@@ -1564,6 +1573,7 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self, uint32 te
         if (itr->second &&
             itr->second->GetPlayer() &&
             itr->second->GetPlayer()->IsInWorld() &&
+            itr->second->GetSecurity() >= security &&
             itr->second != self &&
             (team == 0 || itr->second->GetPlayer()->GetTeam() == team) )
         {
@@ -1640,6 +1650,25 @@ void World::SendWorldText(int32 string_id, ...)
     for(SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if(!itr->second || !itr->second->GetPlayer() || !itr->second->GetPlayer()->IsInWorld() )
+            continue;
+
+        wt_do(itr->second->GetPlayer());
+    }
+
+    va_end(ap);
+}
+
+/// Send a System Message to all players (except self if mentioned)
+void World::SendWorldTextWithSecurity(AccountTypes security, int32 string_id, ...)
+{
+    va_list ap;
+    va_start(ap, string_id);
+
+    MaNGOS::WorldWorldTextBuilder wt_builder(string_id, &ap);
+    MaNGOS::LocalizedPacketListDo<MaNGOS::WorldWorldTextBuilder> wt_do(wt_builder);
+    for(SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if(!itr->second || !itr->second->GetPlayer() || !itr->second->GetPlayer()->IsInWorld() || itr->second->GetSecurity() < security )
             continue;
 
         wt_do(itr->second->GetPlayer());

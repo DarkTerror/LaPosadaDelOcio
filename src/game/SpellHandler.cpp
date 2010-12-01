@@ -341,6 +341,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     if(!_player->GetCharmGuid().IsEmpty() && _player->GetCharmGuid() == _player->GetVehicleGUID())
         mover = _player;
 
+    /* process anticheat check */
+    if (!GetPlayer()->GetAntiCheat()->DoAntiCheatCheck(CHECK_SPELL, spellId, CMSG_CAST_SPELL))
+        return;
+
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId );
 
     if(!spellInfo)

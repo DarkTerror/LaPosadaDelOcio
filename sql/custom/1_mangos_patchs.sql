@@ -1676,3 +1676,5 @@ DELETE FROM `creature_template_addon` WHERE `entry` = 28782;
 DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (28782);
 INSERT INTO `npc_spellclick_spells` VALUES
 (28782, 46598, 0, 0, 0, 1);
+DELETE FROM `mangos_string` WHERE `entry` = 11000;
+INSERT INTO `mangos_string` VALUES (11000, '|cffff0000[Anticheat]: Cheater detected. Nickname: %s. Cheat type: %s.|r', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '|cffff0000[???????]: ????? ?????????. ???: %s. ??? ????: %s.|r');

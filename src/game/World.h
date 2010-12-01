@@ -189,6 +189,8 @@ enum eConfigUInt32Values
     CONFIG_UINT32_CHARDELETE_KEEP_DAYS,
     CONFIG_UINT32_CHARDELETE_METHOD,
     CONFIG_UINT32_CHARDELETE_MIN_LEVEL,
+    CONFIG_UINT32_ANTICHEAT_GMLEVEL,
+    CONFIG_UINT32_ANTICHEAT_ACTION_DELAY,
     CONFIG_UINT32_NUMTHREADS,
     CONFIG_UINT32_RANDOM_BG_RESET_HOUR,
     // External Mail
@@ -336,6 +338,7 @@ enum eConfigBoolValues
     // External Mail
     CONFIG_BOOL_EXTERNAL_MAIL_ENABLED,
     CONFIG_BOOL_PET_UNSUMMON_AT_MOUNT,
+    CONFIG_BOOL_ANTICHEAT_ENABLE,
     CONFIG_BOOL_LOOT_CHESTS_IGNORE_DB,
     CONFIG_BOOL_VALUE_COUNT
 };
@@ -513,8 +516,9 @@ class World
         void LoadConfigSettings(bool reload = false);
 
         void SendWorldText(int32 string_id, ...);
+        void SendWorldTextWithSecurity(AccountTypes security, int32 string_id, ...);
         void SendGlobalText(const char* text, WorldSession *self);
-        void SendGlobalMessage(WorldPacket *packet, WorldSession *self = 0, uint32 team = 0);
+        void SendGlobalMessage(WorldPacket *packet, WorldSession *self = 0, uint32 team = 0, AccountTypes security = SEC_PLAYER);
         void SendZoneMessage(uint32 zone, WorldPacket *packet, WorldSession *self = 0, uint32 team = 0);
         void SendZoneText(uint32 zone, const char *text, WorldSession *self = 0, uint32 team = 0);
         void SendServerMessage(ServerMessageType type, const char *text = "", Player* player = NULL);
