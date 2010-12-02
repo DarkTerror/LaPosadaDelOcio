@@ -39,11 +39,11 @@
 #define GUILD_CHARTER               5863
 #define GUILD_CHARTER_COST          1000                    // 10 S
 #define ARENA_TEAM_CHARTER_2v2      23560
-#define ARENA_TEAM_CHARTER_2v2_COST 800000                  // 80 G
+#define ARENA_TEAM_CHARTER_2v2_COST 8000000                 // 80 G  // 400G+400G
 #define ARENA_TEAM_CHARTER_3v3      23561
-#define ARENA_TEAM_CHARTER_3v3_COST 1200000                 // 120 G
+#define ARENA_TEAM_CHARTER_3v3_COST 12000000                // 120 G // 400G+400G+400G
 #define ARENA_TEAM_CHARTER_5v5      23562
-#define ARENA_TEAM_CHARTER_5v5_COST 2000000                 // 200 G
+#define ARENA_TEAM_CHARTER_5v5_COST 20000000                // 200 G // 400G+400G+400G+400G+400G
 #define CHARTER_DISPLAY_ID          16161
 
 void WorldSession::HandlePetitionBuyOpcode(WorldPacket & recv_data)
